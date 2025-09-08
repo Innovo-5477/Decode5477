@@ -2,6 +2,9 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.opmodecontrol.ActiveOpMode;
+import com.bylazar.telemetry.PanelsTelemetry;
+
+import java.util.function.DoubleSupplier;
 
 import dev.nextftc.control.ControlSystem;
 import dev.nextftc.control.feedback.PIDCoefficients;
@@ -16,20 +19,16 @@ public class Intake implements Subsystem {
     public static final Intake INSTANCE = new Intake();
     private Intake() { }
     private MotorEx intake_motor = new MotorEx("intake");
-
+    public static double vel_target = 0;
     public static double p = 0.1, i= 0, d = 0;
     public static PIDCoefficients coefficients = new PIDCoefficients(p, i, d);
 
     private ControlSystem controller = ControlSystem.builder()
             .velPid(coefficients)
             .build();
-
-    public Command stopSpinning = new RunToVelocity(controller, 0).requires(this);
-    public Command intake = new RunToVelocity(controller, 1000).requires(this);
-    public Command spinOut = new RunToVelocity(controller, -1000).requires(this);
-
     @Override
     public void initialize() {
+
     }
 
     @Override
@@ -38,5 +37,10 @@ public class Intake implements Subsystem {
         coefficients.kP = p;
         coefficients.kI = i;
         coefficients.kD = d;
+        PanelsTelemetry.INSTANCE.getTelemetry().addData("Intake velocity: ", intake_motor.getVelocity());
+        PanelsTelemetry.INSTANCE.getTelemetry().addData("Intake velocity target: ", vel_target);
+    }
+    public Command intake(){
+        return new RunToVelocity(controller, vel_target).requires(this);
     }
 }
