@@ -39,6 +39,7 @@ public class Intake implements Subsystem {
         coefficients.kD = d;
         PanelsTelemetry.INSTANCE.getTelemetry().addData("Intake velocity: ", intake_motor.getVelocity());
         PanelsTelemetry.INSTANCE.getTelemetry().addData("Intake velocity target: ", vel_target);
+        intake();
     }
     public Command intake(){
         return new RunToVelocity(controller, vel_target).requires(this);
