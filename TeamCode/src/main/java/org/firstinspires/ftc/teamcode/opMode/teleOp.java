@@ -54,6 +54,8 @@ public class teleOp extends NextFTCOpMode {
          */
         Sorter.INSTANCE.StartingConfig.schedule();
         //new TurnTo(Angle.fromDeg(90)).schedule();
+
+        /*
         gamepad1a.whenBecomesTrue(Sorter.INSTANCE.ResetFins);
         gamepad1b.whenBecomesTrue(Sorter.INSTANCE.CloseGates);
         gamepad1y.whenBecomesTrue(Sorter.INSTANCE.StartingConfig);
@@ -61,6 +63,7 @@ public class teleOp extends NextFTCOpMode {
         gamepad1dpadup.whenBecomesTrue(Sorter.INSTANCE.PushMiddleBall);
         gamepad1dpaddown.whenBecomesTrue(Sorter.INSTANCE.PushRightBall);
         gamepad1dpadright.whenBecomesTrue(Sorter.INSTANCE.FunnelFromMiddle);
+         */
         gamepad1dpadleft.whenBecomesTrue(Intake.INSTANCE.intake());
     }
 
