@@ -23,22 +23,16 @@ public class ColorSensors {
     NormalizedColorSensor MiddleSensor = hardwareMap.get(NormalizedColorSensor.class, "middle_sensor");
     NormalizedColorSensor RightSensor = hardwareMap.get(NormalizedColorSensor.class, "right_sensor");
     String outputLeft = "N";
+    int [] minPurple = {0,0,0};
+    int [] maxPurple = {255, 255, 255};
+
+    int [] minGreen = {0,0,0};
+    int [] maxGreen = {255, 255, 255};
     public Command leftSensor = new LambdaCommand()
             .setStart(() -> {
-                int [] minPurple = {0,0,0};
-                int [] maxPurple = {255, 255, 255};
-
-                int [] minGreen = {0,0,0};
-                int [] maxGreen = {255, 255, 255};
                 outputLeft = "N";
             })
             .setUpdate(() -> {
-                int [] minPurple = {0,0,0};
-                int [] maxPurple = {255, 255, 255};
-
-                int [] minGreen = {0,0,0};
-                int [] maxGreen = {255, 255, 255};
-                // YOU NEED TO EDIT ALL OF THESE VALUES LATER
                 NormalizedRGBA colors = LeftSensor.getNormalizedColors();
                 double red = colors.red;
                 double green = colors.green;
@@ -49,12 +43,10 @@ public class ColorSensors {
                 boolean purpleBlue = minPurple[2] < blue && blue < maxPurple[2];
                 boolean isPurple = purpleRed && purpleGreen && purpleBlue;
 
-
                 boolean greenRed = minGreen[0] < red && red < maxGreen[0];
                 boolean greenGreen = minGreen[1] < green && green < maxGreen[1];
                 boolean greenBlue = minGreen[2] < blue && blue < maxGreen[2];
                 boolean isGreen = greenRed && greenGreen && greenBlue;
-
 
                 if (isPurple) {
                     outputLeft = "P";
@@ -62,17 +54,18 @@ public class ColorSensors {
                 if(isGreen) {
                     outputLeft = "G";
                 }
+                //else make it N
+
             })
             .setStop(interrupted -> {
 
             })
-            .setIsDone(() -> true)
-            .requires()
+            .setIsDone(() -> true) //20 loops or outputLeft.equals("G") or outputLeft.equals("P") probably?
+            .requires(this)
             .setInterruptible(true)
             .setStop(interrupted -> {
+                //turn off color sensor
+            });
 
-            })
-            .setIsDone(() -> true)
-            .requires()
-            .setInterruptible(true);
+    //some java method that returns output left
 }
