@@ -18,9 +18,7 @@ import dev.nextftc.hardware.positionable.SetPositions;
 @Configurable
 public class Sorter extends SubsystemGroup {
     public static final Sorter INSTANCE = new Sorter();
-    ColorSensor LeftSensor = hardwareMap.get(ColorSensor.class, "left_sensor");
-    ColorSensor MiddleSensor = hardwareMap.get(ColorSensor.class, "middle_sensor");
-    ColorSensor RightSensor = hardwareMap.get(ColorSensor.class, "right_sensor");
+
     private Sorter() {
         super(
                 RightFin.INSTANCE,
