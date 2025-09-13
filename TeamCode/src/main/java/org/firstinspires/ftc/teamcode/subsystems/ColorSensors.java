@@ -17,7 +17,6 @@ import dev.nextftc.core.subsystems.SubsystemGroup;
 import dev.nextftc.hardware.controllable.RunToVelocity;
 
 public class ColorSensors {
-
     private ColorSensors() {}
     NormalizedColorSensor LeftSensor = hardwareMap.get(NormalizedColorSensor.class, "left_sensor");
     NormalizedColorSensor MiddleSensor = hardwareMap.get(NormalizedColorSensor.class, "middle_sensor");
