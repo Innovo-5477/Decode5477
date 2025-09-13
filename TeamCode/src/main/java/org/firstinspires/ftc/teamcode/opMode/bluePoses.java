@@ -10,7 +10,6 @@ import java.util.List;
 @Configurable
 public class bluePoses {
     public List<Pose> Poses = new ArrayList<>();
-
     public bluePoses() {
         Pose StartPose = new Pose(62.87, 105.01, Math.toRadians(90));
         Poses.add(StartPose);
@@ -21,7 +20,9 @@ public class bluePoses {
         return Poses;
     }
     public List<Pose> getRedPoses() {
-        //implement a loop that mirrors all poses
+        for (Pose pose : Poses) {
+            pose.mirror();
+        }
         return Poses;
     }
 
