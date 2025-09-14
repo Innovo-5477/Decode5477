@@ -15,7 +15,6 @@ public class bluePoses {
         Poses.add(StartPose);
     }
 
-
     public List<Pose> getBluePoses() {
         return Poses;
     }

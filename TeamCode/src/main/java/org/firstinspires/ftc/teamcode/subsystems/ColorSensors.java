@@ -13,14 +13,17 @@ import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.groups.ParallelGroup;
 import dev.nextftc.core.commands.groups.SequentialGroup;
 import dev.nextftc.core.commands.utility.LambdaCommand;
+import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.core.subsystems.SubsystemGroup;
+import dev.nextftc.ftc.ActiveOpMode;
 import dev.nextftc.hardware.controllable.RunToVelocity;
 
-public class ColorSensors {
+@Configurable
+public class ColorSensors implements Subsystem {
     private ColorSensors() {}
-    NormalizedColorSensor LeftSensor = hardwareMap.get(NormalizedColorSensor.class, "left_sensor");
-    NormalizedColorSensor MiddleSensor = hardwareMap.get(NormalizedColorSensor.class, "middle_sensor");
-    NormalizedColorSensor RightSensor = hardwareMap.get(NormalizedColorSensor.class, "right_sensor");
+    NormalizedColorSensor LeftSensor;
+    NormalizedColorSensor MiddleSensor;
+    NormalizedColorSensor RightSensor;
     String outputLeft = "N";
     String outputMiddle = "N";
     String outputRight = "N";
@@ -66,8 +69,8 @@ public class ColorSensors {
             .setStop(interrupted -> {
 
             })
-            .setIsDone(() -> (outputLeft != "N" || loopLeft == 20))
-            .requires(this)
+            .setIsDone(() -> (!outputLeft.equals("N")|| loopLeft == 20))
+            .requires(LeftSensor)
             .setInterruptible(true)
             .setStop(interrupted -> {
                 //turn off color sensor
@@ -109,8 +112,8 @@ public class ColorSensors {
             .setStop(interrupted -> {
 
             })
-            .setIsDone(() -> (outputMiddle != "N" || loopMiddle == 20))
-            .requires(this)
+            .setIsDone(() -> (!outputMiddle.equals("N") || loopMiddle == 20))
+            .requires(MiddleSensor)
             .setInterruptible(true)
             .setStop(interrupted -> {
                 //turn off color sensor
@@ -151,8 +154,8 @@ public class ColorSensors {
             .setStop(interrupted -> {
 
             })
-            .setIsDone(() -> (outputRight != "N" || loopRight == 20))
-            .requires(this)
+            .setIsDone(() -> (!outputRight.equals("N") || loopRight == 20))
+            .requires(RightSensor)
             .setInterruptible(true)
             .setStop(interrupted -> {
                 //turn off color sensor
@@ -171,5 +174,10 @@ public class ColorSensors {
         return outputRight;
     }
 
-    //some java method that returns output left
+    @Override
+    public void initialize() {
+        LeftSensor = ActiveOpMode.hardwareMap().get(NormalizedColorSensor.class, "left_sensor");
+        RightSensor = ActiveOpMode.hardwareMap().get(NormalizedColorSensor.class, "right_sensor");
+        MiddleSensor = ActiveOpMode.hardwareMap().get(NormalizedColorSensor.class, "middle_sensor");
+    }
 }
