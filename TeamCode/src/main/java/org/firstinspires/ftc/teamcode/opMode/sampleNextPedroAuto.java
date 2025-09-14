@@ -10,54 +10,56 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+import org.firstinspires.ftc.teamcode.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.subsystems.Sorter;
+
 import static dev.nextftc.extensions.pedro.PedroComponent.follower;
 import java.util.List;
 
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.CommandManager;
+import dev.nextftc.core.commands.delays.Delay;
 import dev.nextftc.core.commands.groups.SequentialGroup;
+import dev.nextftc.core.components.SubsystemComponent;
 import dev.nextftc.extensions.pedro.FollowPath;
 import dev.nextftc.extensions.pedro.PedroComponent;
 import dev.nextftc.ftc.NextFTCOpMode;
 
-@Autonomous(name = "Blue auto pls be wac")
-public class blueAuto extends NextFTCOpMode {
+@Autonomous(name = "Sample NextFTC Pedro Autonomous")
+public class sampleNextPedroAuto extends NextFTCOpMode {
     {
-        addComponents(new PedroComponent(Constants::createFollower));
+        addComponents(new PedroComponent(Constants::createFollower),
+                new SubsystemComponent(Claw.INSTANCE);
     }
-    bluePoses poseClass = new bluePoses();
-    public List<Pose> Poses = poseClass.getBluePoses();
-
-    //TODO: Motif Variable
-    Pose startPose = Poses.get(0);
-    Pose shootPose = Poses.get(1);
+    Pose startPose =  new Pose(62.87, 105.01, Math.toRadians(90));
+    Pose shootPose = new Pose(54.7, 100, Math.toRadians(135));
     PathChain ScorePreload;
     public void buildPaths(){
-         ScorePreload = follower().pathBuilder()
+        ScorePreload = follower.pathBuilder()
                 .addPath(new BezierLine(startPose, shootPose))
                 .setLinearHeadingInterpolation(startPose.getHeading(), shootPose.getHeading())
                 .build();
     }
     public Command run = new SequentialGroup(
-        new FollowPath(ScorePreload)
+            new FollowPath(ScorePreload),
+            new Delay(.2),
+            Claw.INSTANCE.open()
     );
 
     @Override
     public void onInit(){
         follower().setStartingPose(startPose);
+        Claw.INSTANCE.close().schedule();
         buildPaths();
     }
 
     @Override
     public void onWaitForStart(){
-        //tom scan to update motif variable
-        //color sensor scan for preloads
+        //scan obelisk if necessary
     }
 
     @Override
     public void onStartButtonPressed(){
-        //TODO: Cancel the tom apriltag command
-        //CommandManager.INSTANCE.cancelCommand(c);
         run.schedule();
     }
 }
