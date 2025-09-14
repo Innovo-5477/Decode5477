@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.opMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
+import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Sorter;
 
@@ -9,6 +11,7 @@ import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.components.BindingsComponent;
 import dev.nextftc.core.components.SubsystemComponent;
 import dev.nextftc.core.units.Angle;
+import dev.nextftc.extensions.pedro.PedroComponent;
 import dev.nextftc.extensions.pedro.PedroDriverControlled;
 import dev.nextftc.extensions.pedro.TurnTo;
 import dev.nextftc.ftc.Gamepads;
@@ -27,7 +30,8 @@ public class teleOp extends NextFTCOpMode {
             addComponents(
                     new SubsystemComponent(Intake.INSTANCE, Sorter.INSTANCE),
                     BulkReadComponent.INSTANCE,
-                    BindingsComponent.INSTANCE
+                    BindingsComponent.INSTANCE,
+                    new PedroComponent(Constants::createFollower)
             );
         }
     Button gamepad1a = button(() -> gamepad1.a);
