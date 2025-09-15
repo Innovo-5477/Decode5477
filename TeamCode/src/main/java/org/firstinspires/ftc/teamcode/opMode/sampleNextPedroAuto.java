@@ -17,7 +17,7 @@ import dev.nextftc.core.components.SubsystemComponent;
 import dev.nextftc.extensions.pedro.FollowPath;
 import dev.nextftc.extensions.pedro.PedroComponent;
 import dev.nextftc.ftc.NextFTCOpMode;
-
+/*
 @Autonomous(name = "Sample NextFTC Pedro Autonomous")
 public class sampleNextPedroAuto extends NextFTCOpMode {
     {
@@ -56,3 +56,5 @@ public class sampleNextPedroAuto extends NextFTCOpMode {
         run.schedule();
     }
 }
+
+ */
