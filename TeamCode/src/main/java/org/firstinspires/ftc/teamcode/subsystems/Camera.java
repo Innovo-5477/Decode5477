@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.opMode;
 
 import android.graphics.Color;
 
@@ -95,7 +96,8 @@ public class Camera implements Subsystem {
 
     @Override
     public void initialize() {
-        tom = hardwareMap.get(Limelight3A.class, "tom");
+        tom = opMode.hardwareMap.get(Limelight3A.class, "tom");
+        //tom = hardwareMap.get(Limelight3A.class, "tom");
         tom.setPollRateHz(90);
         tom.pipelineSwitch(0);
         tom.start();
