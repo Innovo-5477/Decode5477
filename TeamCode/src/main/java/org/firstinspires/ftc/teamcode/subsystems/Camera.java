@@ -96,8 +96,7 @@ public class Camera implements Subsystem {
 
     @Override
     public void initialize() {
-        tom = opMode.hardwareMap.get(Limelight3A.class, "tom");
-        //tom = hardwareMap.get(Limelight3A.class, "tom");
+        tom = ActiveOpMode.hardwareMap().get(Limelight3A.class, "tom");
         tom.setPollRateHz(90);
         tom.pipelineSwitch(0);
         tom.start();
