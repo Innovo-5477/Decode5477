@@ -58,7 +58,7 @@ public class teleOp extends NextFTCOpMode {
                     BulkReadComponent.INSTANCE,
                     BindingsComponent.INSTANCE,
                     new PedroComponent(Constants::createFollower)
-            ); //DAVID MAKE SURE I'M DOING THE RIGHT THING BY IMPLEMENTING THESE SUBSYSTEMS PLEASEE
+            );
         }
     Button gamepad1a = button(() -> gamepad1.a);
     Button gamepad1b = button(() -> gamepad1.b);

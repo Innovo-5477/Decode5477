@@ -34,7 +34,7 @@ import dev.nextftc.extensions.pedro.PedroComponent;
 import dev.nextftc.ftc.NextFTCOpMode;
 import dev.nextftc.ftc.components.BulkReadComponent;
 
-@Autonomous(name = "Blue auto pls be wac")
+@Autonomous(name = "Tomathan Testjamin")
 public class Tomtest extends NextFTCOpMode {
     public Tomtest() {addComponents(new SubsystemComponent(Camera.INSTANCE));}
 

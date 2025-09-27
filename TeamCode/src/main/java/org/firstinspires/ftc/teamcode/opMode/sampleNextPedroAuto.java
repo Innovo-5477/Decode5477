@@ -13,36 +13,41 @@ import static dev.nextftc.extensions.pedro.PedroComponent.follower;
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.delays.Delay;
 import dev.nextftc.core.commands.groups.SequentialGroup;
+import dev.nextftc.core.components.BindingsComponent;
 import dev.nextftc.core.components.SubsystemComponent;
 import dev.nextftc.extensions.pedro.FollowPath;
 import dev.nextftc.extensions.pedro.PedroComponent;
 import dev.nextftc.ftc.NextFTCOpMode;
-/*
+import dev.nextftc.ftc.components.BulkReadComponent;
+
 @Autonomous(name = "Sample NextFTC Pedro Autonomous")
 public class sampleNextPedroAuto extends NextFTCOpMode {
-    {
-        addComponents(new PedroComponent(Constants::createFollower),
-                new SubsystemComponent(Claw.INSTANCE);
+
+    public sampleNextPedroAuto() {
+        addComponents(
+                new PedroComponent(Constants::createFollower),
+                BulkReadComponent.INSTANCE
+        );
     }
-    Pose startPose =  new Pose(62.87, 105.01, Math.toRadians(90));
-    Pose shootPose = new Pose(54.7, 100, Math.toRadians(135));
+    Pose startPose =  new Pose(8, 8, Math.toRadians(90));
+    Pose shootPose = new Pose(8, 31, Math.toRadians(135));
     PathChain ScorePreload;
     public void buildPaths(){
-        ScorePreload = follower.pathBuilder()
+        ScorePreload = PedroComponent.follower().pathBuilder()
                 .addPath(new BezierLine(startPose, shootPose))
                 .setLinearHeadingInterpolation(startPose.getHeading(), shootPose.getHeading())
                 .build();
     }
-    public Command run = new SequentialGroup(
-            new FollowPath(ScorePreload),
-            new Delay(.2),
-            Claw.INSTANCE.open()
-    );
+    public Command run() {
+        return new SequentialGroup(
+                new FollowPath(ScorePreload),
+                new Delay(.2)
+        );
+    }
 
     @Override
     public void onInit(){
-        follower().setStartingPose(startPose);
-        Claw.INSTANCE.close().schedule();
+        PedroComponent.follower().setStartingPose(startPose);
         buildPaths();
     }
 
@@ -53,8 +58,6 @@ public class sampleNextPedroAuto extends NextFTCOpMode {
 
     @Override
     public void onStartButtonPressed(){
-        run.schedule();
+        run().schedule();
     }
 }
-
- */

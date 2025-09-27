@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.opMode;
 
-import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.follower;
-
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.Path;
@@ -10,20 +8,22 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
-import static dev.nextftc.extensions.pedro.PedroComponent.follower;
 import java.util.List;
 
 import dev.nextftc.core.commands.Command;
-import dev.nextftc.core.commands.CommandManager;
 import dev.nextftc.core.commands.groups.SequentialGroup;
 import dev.nextftc.extensions.pedro.FollowPath;
 import dev.nextftc.extensions.pedro.PedroComponent;
 import dev.nextftc.ftc.NextFTCOpMode;
+import dev.nextftc.ftc.components.BulkReadComponent;
 
 @Autonomous(name = "Blue auto pls be wac")
 public class blueAuto extends NextFTCOpMode {
     {
-        addComponents(new PedroComponent(Constants::createFollower));
+        addComponents(
+                new PedroComponent(Constants::createFollower),
+                BulkReadComponent.INSTANCE
+        );
     }
     bluePoses poseClass = new bluePoses();
     public List<Pose> Poses = poseClass.getBluePoses();
@@ -33,7 +33,7 @@ public class blueAuto extends NextFTCOpMode {
     Pose shootPose = Poses.get(1);
     PathChain ScorePreload;
     public void buildPaths(){
-         ScorePreload = follower().pathBuilder()
+         ScorePreload = PedroComponent.follower().pathBuilder()
                 .addPath(new BezierLine(startPose, shootPose))
                 .setLinearHeadingInterpolation(startPose.getHeading(), shootPose.getHeading())
                 .build();
@@ -44,7 +44,7 @@ public class blueAuto extends NextFTCOpMode {
 
     @Override
     public void onInit(){
-        follower().setStartingPose(startPose);
+        PedroComponent.follower().setStartingPose(startPose);
         buildPaths();
     }
 
