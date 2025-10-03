@@ -6,6 +6,7 @@ import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathChain;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -37,7 +38,7 @@ import dev.nextftc.ftc.components.BulkReadComponent;
 @Autonomous(name = "Tomathan Testjamin")
 public class Tomtest extends NextFTCOpMode {
     public Tomtest() {addComponents(new SubsystemComponent(Camera.INSTANCE));}
-
+    //Limelight3A tom = hardwareMap.get(Limelight3A.class, "tom");
 
     @Override
     public void onInit(){
@@ -59,5 +60,20 @@ public class Tomtest extends NextFTCOpMode {
         telemetry.addData("Second item:", pat[1]);
         telemetry.addData("Third item", pat[2]);
         telemetry.update();
+
     }
+
+    @Override
+    public void onUpdate() {
+        String [] pat = Camera.INSTANCE.getObelisk();
+        telemetry.addData("First item:", pat[0]);
+        telemetry.addData("Second item:", pat[1]);
+        telemetry.addData("Third item", pat[2]);
+        telemetry.addData("stuff", pat[0]);
+        boolean [] isValidstuff = Camera.INSTANCE.isValid();
+        telemetry.addData("Is it valid: ", isValidstuff[0]);
+        telemetry.addData("Is it not null: ", isValidstuff[1+]);
+        telemetry.update();
+    }
+
 }

@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.opMode;
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
 
 import android.graphics.Color;
 
@@ -30,7 +31,7 @@ public class Camera implements Subsystem {
     String [] array21 = {"G", "P", "P"};
     String [] array22 = {"P", "G", "P"};
     String [] array23 = {"P", "P", "G"};
-    String [] gulp = {"gulp"};
+    String [] gulp = {"G", "U", "LP"};
     int fiducialID = 0;
     double angle = 0;
 
@@ -92,6 +93,10 @@ public class Camera implements Subsystem {
         return angle;
     }
 
+    public boolean [] isValid() {
+        boolean [] array = {(tom.getLatestResult().isValid()), (tom.getLatestResult() != null)};
+        return array;
+    }
 
 
     @Override
@@ -101,4 +106,11 @@ public class Camera implements Subsystem {
         tom.pipelineSwitch(0);
         tom.start();
     }
+    @Override
+    public void periodic() {
+        String [] pat = Camera.INSTANCE.getObelisk();
+        //telemetry.addData("Is valid: ", tom.getLatestResult().isValid());
+        //telemetry.addData("Exists?: ", tom.getLatestResult() != null);
+    }
+
 }
