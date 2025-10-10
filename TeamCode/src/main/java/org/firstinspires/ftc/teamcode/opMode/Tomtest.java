@@ -72,8 +72,7 @@ public class Tomtest extends NextFTCOpMode {
         telemetry.addData("stuff", pat[0]);
         boolean [] isValidstuff = Camera.INSTANCE.isValid();
         telemetry.addData("Is it valid: ", isValidstuff[0]);
-        telemetry.addData("Is it not null: ", isValidstuff[1+]);
+        telemetry.addData("Is it not null: ", isValidstuff[1]);
         telemetry.update();
     }
-
 }

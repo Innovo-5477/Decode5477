@@ -21,10 +21,9 @@ public class Intake implements Subsystem {
     private MotorEx intake_motor = new MotorEx("intake");
     public static double vel_target = 0;
     public static double p = 0.1, i= 0, d = 0;
-    public static PIDCoefficients coefficients = new PIDCoefficients(p, i, d);
 
     private ControlSystem controller = ControlSystem.builder()
-            .velPid(coefficients)
+            .velPid(p,i,d)
             .build();
     @Override
     public void initialize() {
@@ -34,11 +33,8 @@ public class Intake implements Subsystem {
     @Override
     public void periodic() {
         intake_motor.setPower(controller.calculate(intake_motor.getState()));
-        coefficients.kP = p;
-        coefficients.kI = i;
-        coefficients.kD = d;
-        PanelsTelemetry.INSTANCE.getTelemetry().addData("Intake velocity: ", intake_motor.getVelocity());
-        PanelsTelemetry.INSTANCE.getTelemetry().addData("Intake velocity target: ", vel_target);
+        //PanelsTelemetry.INSTANCE.getTelemetry().addData("Intake velocity: ", intake_motor.getVelocity());
+        //PanelsTelemetry.INSTANCE.getTelemetry().addData("Intake velocity target: ", vel_target);
         intake();
     }
     public Command intake(){

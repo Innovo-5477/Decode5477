@@ -108,7 +108,7 @@ public class Camera implements Subsystem {
     }
     @Override
     public void periodic() {
-        String [] pat = Camera.INSTANCE.getObelisk();
+        //String [] pat = Camera.INSTANCE.getObelisk();
         //telemetry.addData("Is valid: ", tom.getLatestResult().isValid());
         //telemetry.addData("Exists?: ", tom.getLatestResult() != null);
     }

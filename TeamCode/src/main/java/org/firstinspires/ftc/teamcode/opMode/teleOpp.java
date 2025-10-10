@@ -38,26 +38,14 @@ import dev.nextftc.hardware.impl.IMUEx;
 import dev.nextftc.hardware.impl.MotorEx;
 import static dev.nextftc.bindings.Bindings.*;
 
-@TeleOp(name = "teleOp")
+@TeleOp(name = "tele dkibidi")
 @Configurable
-public class teleOp extends NextFTCOpMode {
-    public teleOp() {
+public class teleOpp extends NextFTCOpMode {
+    public teleOpp() {
             addComponents(
                     new SubsystemComponent(
-                            Intake.INSTANCE,
-                            Sorter.INSTANCE,
-                            Flywheel.INSTANCE,
-                            ColorSensors.INSTANCE,
-                            Camera.INSTANCE,
-                            LeftFin.INSTANCE,
-                            LeftGate.INSTANCE,
-                            RightFin.INSTANCE,
-                            RightGate.INSTANCE,
-                            Robot.INSTANCE,
-                            Sorter.INSTANCE),
-                    BulkReadComponent.INSTANCE,
-                    BindingsComponent.INSTANCE,
-                    new PedroComponent(Constants::createFollower)
+                            Intake.INSTANCE),
+                    BindingsComponent.INSTANCE
             );
         }
     Button gamepad1a = button(() -> gamepad1.a);
@@ -68,9 +56,6 @@ public class teleOp extends NextFTCOpMode {
     Button gamepad1dpaddown = button(() -> gamepad1.dpad_down);
     Button gamepad1dpadright = button(() -> gamepad1.dpad_right);
     Button gamepad1dpadleft = button(() -> gamepad1.dpad_left);
-
-    public static PIDCoefficients coeffcients = new PIDCoefficients(1, 0, 0);
-    private ControlSystem controller = ControlSystem.builder().angular(AngleType.RADIANS, fb -> fb.posPid(coeffcients)).build();
     @Override
     public void onStartButtonPressed() {
         /*
@@ -84,7 +69,6 @@ public class teleOp extends NextFTCOpMode {
         driverControlled.schedule();
 
          */
-        Sorter.INSTANCE.StartingConfig.schedule();
         //new TurnTo(Angle.fromDeg(90)).schedule();
 
         /*
