@@ -40,6 +40,7 @@ public class Tomtest extends NextFTCOpMode {
     public Tomtest() {addComponents(new SubsystemComponent(Camera.INSTANCE));}
     //Limelight3A tom = hardwareMap.get(Limelight3A.class, "tom");
     //Shmuel was here
+    //Shmuel 2
     @Override
     public void onInit(){
 
