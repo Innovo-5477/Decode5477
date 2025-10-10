@@ -48,14 +48,7 @@ public class teleOpp extends NextFTCOpMode {
                     BindingsComponent.INSTANCE
             );
         }
-    Button gamepad1a = button(() -> gamepad1.a);
-    Button gamepad1b = button(() -> gamepad1.b);
-    Button gamepad1y = button(() -> gamepad1.y);
-    Button gamepad1x = button(() -> gamepad1.x);
-    Button gamepad1dpadup = button(() -> gamepad1.dpad_up);
-    Button gamepad1dpaddown = button(() -> gamepad1.dpad_down);
-    Button gamepad1dpadright = button(() -> gamepad1.dpad_right);
-    Button gamepad1dpadleft = button(() -> gamepad1.dpad_left);
+
     @Override
     public void onStartButtonPressed() {
         /*
@@ -80,7 +73,7 @@ public class teleOpp extends NextFTCOpMode {
         gamepad1dpaddown.whenBecomesTrue(Sorter.INSTANCE.PushRightBall);
         gamepad1dpadright.whenBecomesTrue(Sorter.INSTANCE.FunnelFromMiddle);
          */
-        gamepad1dpadleft.whenBecomesTrue(Intake.INSTANCE.intake());
+        Gamepads.gamepad1().dpadLeft().whenBecomesTrue(Intake.INSTANCE.intake);
 
         /* This is the calculation to get rX with headlock when we actually code the rest of teleOp
 
