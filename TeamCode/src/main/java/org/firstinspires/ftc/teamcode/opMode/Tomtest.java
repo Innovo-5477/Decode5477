@@ -39,7 +39,7 @@ import dev.nextftc.ftc.components.BulkReadComponent;
 public class Tomtest extends NextFTCOpMode {
     public Tomtest() {addComponents(new SubsystemComponent(Camera.INSTANCE));}
     //Limelight3A tom = hardwareMap.get(Limelight3A.class, "tom");
-
+    //Shmuel was here
     @Override
     public void onInit(){
 
