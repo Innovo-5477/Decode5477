@@ -10,6 +10,7 @@ import java.util.function.DoubleSupplier;
 import dev.nextftc.control.ControlSystem;
 import dev.nextftc.control.feedback.PIDCoefficients;
 import dev.nextftc.control.feedforward.BasicFeedforward;
+import dev.nextftc.control.feedforward.BasicFeedforwardParameters;
 import dev.nextftc.control.feedforward.FeedforwardElement;
 import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.core.commands.Command;
@@ -26,10 +27,10 @@ public class Intake implements Subsystem {
 
     public static double target = 0;
     public static PIDCoefficients coefficients = new PIDCoefficients(0.0001, 0, 0);
-    public static FeedforwardElement ff = new BasicFeedforward(10);
+    public static BasicFeedforwardParameters ff = new BasicFeedforwardParameters(10);
     ControlSystem controller = ControlSystem.builder()
             .velPid(coefficients)
-            .feedforward(ff)
+            .basicFF(ff)
             .build();
 
     public Command intake = new RunToVelocity(controller, target).requires(this);
