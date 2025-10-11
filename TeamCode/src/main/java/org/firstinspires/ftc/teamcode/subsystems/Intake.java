@@ -27,7 +27,7 @@ public class Intake implements Subsystem {
     public static double target = 0;
     public static PIDCoefficients coefficients = new PIDCoefficients(0.0001, 0, 0);
     public static FeedforwardElement ff = new BasicFeedforward(10);
-    private ControlSystem controller = ControlSystem.builder()
+    ControlSystem controller = ControlSystem.builder()
             .velPid(coefficients)
             .feedforward(ff)
             .build();
