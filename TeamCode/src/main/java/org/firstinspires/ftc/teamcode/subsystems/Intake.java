@@ -9,6 +9,7 @@ import java.util.function.DoubleSupplier;
 
 import dev.nextftc.control.ControlSystem;
 import dev.nextftc.control.feedback.PIDCoefficients;
+import dev.nextftc.control.feedforward.BasicFeedforward;
 import dev.nextftc.control.feedforward.FeedforwardElement;
 import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.core.commands.Command;
@@ -24,10 +25,11 @@ public class Intake implements Subsystem {
     private MotorEx intake_motor = new MotorEx("intake");
 
     public static double target = 0;
-    public static double p = 0.001, i = 0, d = 0.05, f = 0;
+    public static PIDCoefficients coefficients = new PIDCoefficients(0.0001, 0, 0);
+    public static FeedforwardElement ff = new BasicFeedforward(10);
     private ControlSystem controller = ControlSystem.builder()
-            .velPid(p,i,d)
-            .basicFF(f)
+            .velPid(coefficients)
+            .feedforward(ff)
             .build();
 
     public Command intake = new RunToVelocity(controller, target).requires(this);
@@ -35,10 +37,8 @@ public class Intake implements Subsystem {
     @Override
     public void periodic() {
         intake_motor.setPower(controller.calculate(intake_motor.getState()));
-        controller = ControlSystem.builder().velPid(p,i,d).basicFF().build();
         ActiveOpMode.telemetry().addData("Intake velocity: ", intake_motor.getVelocity());
         ActiveOpMode.telemetry().addData("Intake target: ", target);
         ActiveOpMode.telemetry().update();
-
     }
 }
