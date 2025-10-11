@@ -26,15 +26,21 @@ public class Intake implements Subsystem {
     private MotorEx intake_motor = new MotorEx("intake");
 
     public static double target = 0;
-    public static PIDCoefficients coefficients = new PIDCoefficients(0.0001, 0, 0);
-    public static BasicFeedforwardParameters ff = new BasicFeedforwardParameters(10);
-    ControlSystem controller = ControlSystem.builder()
-            .velPid(coefficients)
-            .basicFF(ff)
-            .build();
+    public static PIDCoefficients coefficients;
+    public static BasicFeedforwardParameters ff;
+    ControlSystem controller;
 
     public Command intake = new RunToVelocity(controller, target).requires(this);
 
+    @Override
+    public void initialize(){
+        coefficients = new PIDCoefficients(0.0001, 0, 0);
+        ff = new BasicFeedforwardParameters(10);
+        controller = ControlSystem.builder()
+                .velPid(coefficients)
+                .basicFF(ff)
+                .build();
+    }
     @Override
     public void periodic() {
         intake_motor.setPower(controller.calculate(intake_motor.getState()));
