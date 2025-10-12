@@ -24,8 +24,8 @@ import dev.nextftc.hardware.impl.MotorEx;
 @Configurable
 public class Intake implements Subsystem {
     public static double target = 0;
-    public static PIDCoefficients coefficients = new PIDCoefficients(0.0001, 0, 0);
-    public static BasicFeedforwardParameters ff = new BasicFeedforwardParameters(1, 1, 1);
+    public static PIDCoefficients coefficients = new PIDCoefficients(0.0005, 0, 0);
+    public static BasicFeedforwardParameters ff = new BasicFeedforwardParameters(0.0002, 0, 0.3);
     public static final Intake INSTANCE = new Intake();
     private Intake() { }
     private MotorEx intake_motor = new MotorEx("intake");
@@ -45,6 +45,10 @@ public class Intake implements Subsystem {
             )
     );
 
+    @Override
+    public void initialize(){
+        intake_motor.zeroed();
+    }
     @Override
     public void periodic() {
         intake_motor.setPower(controller.calculate(
