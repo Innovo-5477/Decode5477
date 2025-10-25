@@ -36,7 +36,8 @@ public class Intake implements Subsystem {
             .basicFF(ff)
             .build();
 
-    public Command intake = new InstantCommand(
+    //TODO: once tuned, copy this method for a specific number
+    public Command intakeVelocity = new InstantCommand(
             () -> controller.setGoal(
                     new KineticState(
                             intake_motor.getCurrentPosition(),
@@ -44,6 +45,15 @@ public class Intake implements Subsystem {
                     )
             )
     );
+    public Command zeroVelocity = new InstantCommand(
+            () -> controller.setGoal(
+                    new KineticState(
+                            intake_motor.getCurrentPosition(),
+                            0
+                    )
+            )
+    );
+
 
     @Override
     public void initialize(){
