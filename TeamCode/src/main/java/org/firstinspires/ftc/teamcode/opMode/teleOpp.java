@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.opMode;
 import com.bylazar.configurables.annotations.Configurable;
+import com.qualcomm.hardware.modernrobotics.comm.ReadWriteRunnable;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.subsystems.Flywheel;
@@ -9,8 +10,10 @@ import org.firstinspires.ftc.teamcode.subsystems.Loader;
 import org.firstinspires.ftc.teamcode.subsystems.RightSorter;
 
 import dev.nextftc.bindings.BindingManager;
+import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.groups.ParallelGroup;
 import dev.nextftc.core.commands.groups.SequentialGroup;
+import dev.nextftc.core.commands.utility.InstantCommand;
 import dev.nextftc.core.components.BindingsComponent;
 import dev.nextftc.core.components.SubsystemComponent;
 import dev.nextftc.extensions.pedro.PedroDriverControlled;
@@ -33,7 +36,6 @@ public class teleOpp extends NextFTCOpMode {
                     BindingsComponent.INSTANCE
             );
         }
-
     @Override
     public void onStartButtonPressed() {
 
@@ -46,23 +48,26 @@ public class teleOpp extends NextFTCOpMode {
 
         driverControlled.schedule();
 
-        Gamepads.gamepad1().rightTrigger().inRange(0, 1).whenBecomesTrue(
-                new ParallelGroup(
-                    Intake.INSTANCE.intakeVelocity,
-                    LeftSorter.INSTANCE.runLeftSide,
-                    RightSorter.INSTANCE.runRightSide
-                )
+        SequentialGroup IntakeStuffOn = new SequentialGroup(
+                Intake.INSTANCE.intakeVelocity,
+                LeftSorter.INSTANCE.runLeftSide,
+                RightSorter.INSTANCE.runRightSide
         );
-        Gamepads.gamepad1().rightTrigger().inRange(0, 1).whenBecomesFalse(
-                new ParallelGroup(
-                        Intake.INSTANCE.zeroVelocity,
-                        LeftSorter.INSTANCE.stopLeftSide,
-                        RightSorter.INSTANCE.stopRightSide
-                )
+        SequentialGroup IntakeStuffOff = new SequentialGroup(
+                Intake.INSTANCE.zeroVelocity,
+                LeftSorter.INSTANCE.stopLeftSide,
+                RightSorter.INSTANCE.stopRightSide
         );
 
-        Gamepads.gamepad1().leftTrigger().inRange(0, 1).whenBecomesTrue(Loader.INSTANCE.load_ball);
-        Gamepads.gamepad1().leftTrigger().inRange(0, 1).whenBecomesTrue(Loader.INSTANCE.reset_loader);
+        Gamepads.gamepad1().rightTrigger().inRange(0, 1)
+                .toggleOnBecomesTrue()
+                .whenBecomesTrue(IntakeStuffOn)
+                .whenBecomesFalse(IntakeStuffOff);
+
+        Gamepads.gamepad1().leftTrigger().inRange(0, 1)
+                .toggleOnBecomesTrue()
+                .whenBecomesTrue(Loader.INSTANCE.load_ball)
+                .whenBecomesFalse(Loader.INSTANCE.reset_loader);
 
         //figure out how to make this a loop and give encoder reference
         Gamepads.gamepad1().y().whenBecomesTrue(
@@ -82,7 +87,7 @@ public class teleOpp extends NextFTCOpMode {
 
     @Override
     public void onStop(){
-
+        BindingManager.reset();
     }
 }
 
