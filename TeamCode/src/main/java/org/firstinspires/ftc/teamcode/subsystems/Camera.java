@@ -35,6 +35,8 @@ public class Camera implements Subsystem {
     int fiducialID = 0;
     double angle = 0;
 
+    double[] pose = {0, 0, 0};
+
     public Command Obelisk = new LambdaCommand()
             .setStart(() -> {
                 fiducialID = 0;
@@ -93,6 +95,11 @@ public class Camera implements Subsystem {
         return angle;
     }
 
+
+    public double[] getPose(){
+        return pose;
+        //TODO: make this return the class variable that stores pose. Update that variable in periodic
+    }
     public boolean [] isValid() {
         boolean [] array = {(tom.getLatestResult().isValid()), (tom.getLatestResult() != null)};
         return array;

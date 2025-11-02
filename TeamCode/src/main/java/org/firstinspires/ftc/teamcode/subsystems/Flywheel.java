@@ -36,23 +36,18 @@ public class Flywheel implements Subsystem {
             .basicFF(ff)
             .build();
 
-    //TODO: once tuned, copy this method for a specific number
-    public Command shootingVelocity = new InstantCommand(
-            () -> controller.setGoal(
-                    new KineticState(
-                            flywheel_motor.getCurrentPosition(),
-                            target
-                    )
-            )
-    );
-    public Command zeroVelocity = new InstantCommand(
-            () -> controller.setGoal(
-                    new KineticState(
-                            flywheel_motor.getCurrentPosition(),
-                            0
-                    )
-            )
-    );
+    public Command shootingVelocity(double setPoint) {
+        target = setPoint;
+        return new InstantCommand(
+                () -> controller.setGoal(
+                        new KineticState(
+                                flywheel_motor.getCurrentPosition(),
+                                target
+                        )
+                )
+        );
+    }
+    public Command zeroVelocity = shootingVelocity(0);
 
 
     @Override

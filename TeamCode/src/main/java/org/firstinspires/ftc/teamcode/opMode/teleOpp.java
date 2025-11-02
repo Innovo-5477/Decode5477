@@ -3,6 +3,7 @@ import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.hardware.modernrobotics.comm.ReadWriteRunnable;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.subsystems.AutoAim;
 import org.firstinspires.ftc.teamcode.subsystems.Flywheel;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.LeftSorter;
@@ -31,7 +32,7 @@ public class teleOpp extends NextFTCOpMode {
                             Loader.INSTANCE,
                             LeftSorter.INSTANCE,
                             RightSorter.INSTANCE,
-                            Flywheel.INSTANCE
+                            AutoAim.INSTANCE
                     ),
                     BindingsComponent.INSTANCE
             );
@@ -69,9 +70,8 @@ public class teleOpp extends NextFTCOpMode {
                 .whenBecomesTrue(Loader.INSTANCE.load_ball)
                 .whenBecomesFalse(Loader.INSTANCE.reset_loader);
 
-        //figure out how to make this a loop and give encoder reference
         Gamepads.gamepad1().y().whenBecomesTrue(
-               Flywheel.INSTANCE.shootingVelocity
+                new InstantCommand(() -> AutoAim.INSTANCE.toggle = !AutoAim.INSTANCE.toggle)
         );
 
 
