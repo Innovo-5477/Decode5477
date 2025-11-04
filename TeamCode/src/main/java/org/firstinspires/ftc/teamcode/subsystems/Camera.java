@@ -140,7 +140,7 @@ public class Camera implements Subsystem {
         setPose.schedule();
         //Idk what these x and y coordinates are relative to, we'll have to see when testing
         pose[0] = botPose.getPosition().x;
-        pose[1] = botPose.getPosition().y;
+        pose[1] = botPose.getPosition().z; //I think it's z
         pose[2] = botPose.getOrientation().getYaw(); //I'm pretty sure it's yaw, but I need to verify when we use it
         return pose;
     }
