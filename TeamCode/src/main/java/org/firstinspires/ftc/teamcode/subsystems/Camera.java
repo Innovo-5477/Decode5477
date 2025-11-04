@@ -14,6 +14,13 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
+import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
+
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.groups.ParallelGroup;
 import dev.nextftc.core.commands.groups.SequentialGroup;
@@ -34,12 +41,21 @@ public class Camera implements Subsystem {
     String [] gulp = {"G", "U", "LP"};
     int fiducialID = 0;
     double angle = 0;
+    boolean endLoop = false;
+
+    //Initializing variables to store pipelines that we use so it's more intuitive
+    int obeliskLLIndex = 7;
+    int GoalLLIndex = 8;
+
+    boolean [] arr = {false, false};
+    Pose3D botPose = new Pose3D(new Position(DistanceUnit.INCH, 0.0, 0.0, 0.0, 0), new YawPitchRollAngles(AngleUnit.DEGREES, 0.0, 0.0, 0.0, 0));
 
     double[] pose = {0, 0, 0};
 
     public Command Obelisk = new LambdaCommand()
             .setStart(() -> {
                 fiducialID = 0;
+                tom.pipelineSwitch(obeliskLLIndex);
             })
             .setUpdate(() -> {
                 LLResult result = tom.getLatestResult();
@@ -72,19 +88,23 @@ public class Camera implements Subsystem {
 
     public Command goalAngle = new LambdaCommand()
             .setStart(() -> {
-                angle = 0;
+                angle = 1e-99;
+                tom.pipelineSwitch(GoalLLIndex);
             })
             .setUpdate(() -> {
                 LLResult result = tom.getLatestResult();
                 if (result != null && result.isValid()) {
+                    angle = result.getTx();
+                    /*
                     LLResultTypes.FiducialResult fiduicalResult = result.getFiducialResults().get(0);
                     if ((fiduicalResult.getFiducialId() == 20) || (fiduicalResult.getFiducialId() == 24)) {
                         angle = result.getTx();
                     }
+                    */
                 }
             })
             .setStop(interrupted -> {})
-            .setIsDone(() -> (false))
+            .setIsDone(() -> (angle != 1e-99)) //Command runs until angle has changed
             .requires(tom)
             .setInterruptible(true)
             .setStop(interrupted -> {
@@ -95,14 +115,39 @@ public class Camera implements Subsystem {
         return angle;
     }
 
+    public Command setPose = new LambdaCommand()
+            .setStart(() -> {
+                botPose = new Pose3D(new Position(DistanceUnit.INCH, 0.0, 0.0, 0.0, 0), new YawPitchRollAngles(AngleUnit.DEGREES, 0.0, 0.0, 0.0, 0));
+                endLoop = false;
+            })
+            .setUpdate(() -> {
+                LLResult result = tom.getLatestResult();
+                if (result != null && result.isValid()) {
+                    botPose = result.getBotpose();
+                    endLoop = true;
+                }
+            })
+            .setStop(interrupted -> {})
+            .setIsDone(() -> (endLoop)) //Could be a source of error here
+            .requires(tom)
+            .setInterruptible(true)
+            .setStop(interrupted -> {
+                //turn off color sensor
+            });
+
 
     public double[] getPose(){
+        setPose.schedule();
+        //Idk what these x and y coordinates are relative to, we'll have to see when testing
+        pose[0] = botPose.getPosition().x;
+        pose[1] = botPose.getPosition().y;
+        pose[2] = botPose.getOrientation().getYaw(); //I'm pretty sure it's yaw, but I need to verify when we use it
         return pose;
-        //TODO: make this return the class variable that stores pose. Update that variable in periodic
     }
     public boolean [] isValid() {
-        boolean [] array = {(tom.getLatestResult().isValid()), (tom.getLatestResult() != null)};
-        return array;
+        arr[0] = tom.getLatestResult().isValid();
+        arr[1] = tom.getLatestResult() != null;
+        return arr;
     }
 
 
@@ -110,11 +155,13 @@ public class Camera implements Subsystem {
     public void initialize() {
         tom = ActiveOpMode.hardwareMap().get(Limelight3A.class, "tom");
         tom.setPollRateHz(90);
-        tom.pipelineSwitch(0);
+        tom.pipelineSwitch(obeliskLLIndex);
         tom.start();
     }
     @Override
     public void periodic() {
+        pose = getPose(); //Are we making it get pose if a toggle is pressed?
+
         //String [] pat = Camera.INSTANCE.getObelisk();
         //telemetry.addData("Is valid: ", tom.getLatestResult().isValid());
         //telemetry.addData("Exists?: ", tom.getLatestResult() != null);
