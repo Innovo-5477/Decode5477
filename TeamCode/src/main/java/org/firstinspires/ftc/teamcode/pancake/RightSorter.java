@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.subsystems;
+package org.firstinspires.ftc.teamcode.pancake;
 
 import com.bylazar.configurables.annotations.Configurable;
 
@@ -6,10 +6,6 @@ import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.hardware.impl.ServoEx;
 import dev.nextftc.hardware.positionable.ServoGroup;
-import dev.nextftc.hardware.positionable.SetPosition;
-import dev.nextftc.hardware.positionable.SetPositions;
-import dev.nextftc.hardware.powerable.Powerable;
-import dev.nextftc.hardware.powerable.SetPower;
 
 @Configurable
 public class RightSorter implements Subsystem {

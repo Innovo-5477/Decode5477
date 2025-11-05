@@ -20,5 +20,4 @@ public class Loader implements Subsystem {
     public Command load_ball = new SetPosition(loader, .5).requires(this);
     public Command reset_loader = new SetPosition(loader, 0).requires(this);
 
-
 }

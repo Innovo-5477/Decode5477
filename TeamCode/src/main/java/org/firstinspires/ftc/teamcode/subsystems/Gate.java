@@ -12,13 +12,12 @@ import dev.nextftc.hardware.powerable.Powerable;
 import dev.nextftc.hardware.powerable.SetPower;
 
 @Configurable
-public class LeftSorter implements Subsystem {
-    public static final LeftSorter INSTANCE = new LeftSorter();
-    private LeftSorter() { }
+public class Gate implements Subsystem {
+    public static final Gate INSTANCE = new Gate();
+    private Gate() { }
 
-    ServoGroup left_sorters = new ServoGroup(new ServoEx("left_middle"), new ServoEx("left_front"));
-    public Command runLeftSide; //TODO: figure this out
-    public Command stopLeftSide; //TODO: figure this out
-
+    ServoEx gate = new ServoEx("gate");
+    public Command open_gate = new SetPosition(gate, .5).requires(this);
+    public Command close_gate = new SetPosition(gate, 0).requires(this);
 
 }
