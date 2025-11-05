@@ -59,6 +59,9 @@ public class teleOpp extends NextFTCOpMode {
         );
 
         driverControlled.schedule();
+        Gamepads.gamepad1().dpadUp().whenBecomesTrue(
+                new InstantCommand(() -> imu.zero())
+        );
         Gamepads.gamepad1().x()
                 .toggleOnBecomesTrue()
                 .whenBecomesTrue(Flywheel.INSTANCE.shootingVelocity(2500))
