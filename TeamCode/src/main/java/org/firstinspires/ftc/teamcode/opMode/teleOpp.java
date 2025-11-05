@@ -59,9 +59,10 @@ public class teleOpp extends NextFTCOpMode {
         );
 
         driverControlled.schedule();
-        Gamepads.gamepad1().x().whenBecomesTrue(
-                Flywheel.INSTANCE.shootingVelocity(2500)
-        );
+        Gamepads.gamepad1().x()
+                .toggleOnBecomesTrue()
+                .whenBecomesTrue(Flywheel.INSTANCE.shootingVelocity(2500))
+                .whenBecomesFalse(Flywheel.INSTANCE.zeroVelocity);
 
         Gamepads.gamepad1().leftTrigger().inRange(0, 1)
                 .whenBecomesTrue(new SequentialGroup(
