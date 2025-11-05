@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.opMode;
 import com.bylazar.configurables.annotations.Configurable;
+import com.pedropathing.control.PIDFCoefficients;
+import com.pedropathing.control.PIDFController;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.pancake.Intake;
@@ -9,6 +11,9 @@ import org.firstinspires.ftc.teamcode.subsystems.Gate;
 import org.firstinspires.ftc.teamcode.subsystems.Loader;
 
 import dev.nextftc.bindings.BindingManager;
+import dev.nextftc.control.ControlSystem;
+import dev.nextftc.control.feedback.PIDCoefficients;
+import dev.nextftc.control.feedback.PIDController;
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.delays.Delay;
 import dev.nextftc.core.commands.groups.SequentialGroup;
@@ -44,6 +49,10 @@ public class teleOpp extends NextFTCOpMode {
     private MotorEx backLeftMotor = new MotorEx("bl").brakeMode().reversed();
     private MotorEx backRightMotor = new MotorEx("br");
     private IMUEx imu = new IMUEx("imu", Direction.UP, Direction.LEFT).zeroed();
+
+    //public static PIDFCoefficients coefficients = new PIDFCoefficients(0.005, 0, 0, 0);
+    //PIDFController headingController = new PIDFController(coefficients);
+    //double heading_error = 0;
     @Override
     public void onStartButtonPressed() {
 
@@ -57,10 +66,11 @@ public class teleOpp extends NextFTCOpMode {
                 Gamepads.gamepad1().rightStickX(),
                 new FieldCentric(imu)
         );
-
         driverControlled.schedule();
+
         Gamepads.gamepad1().dpadUp().whenBecomesTrue(
                 new InstantCommand(() -> imu.zero())
+
         );
         Gamepads.gamepad1().x()
                 .toggleOnBecomesTrue()
@@ -77,6 +87,7 @@ public class teleOpp extends NextFTCOpMode {
                     new Delay(0.1),
                     Loader.INSTANCE.reset_loader
                 ));
+
         /*
         Gamepads.gamepad1().y().whenBecomesTrue(
                 new InstantCommand(() -> AutoAim.INSTANCE.toggle = !AutoAim.INSTANCE.toggle)
@@ -94,6 +105,8 @@ public class teleOpp extends NextFTCOpMode {
     @Override
     public void onUpdate(){
         BindingManager.update();
+        //heading_error = 45 - Math.toDegrees(imu.get().getValue());
+        //heading_error = Math.IEEEremainder(heading_error, 2 * Math.PI);
     }
 
     @Override
