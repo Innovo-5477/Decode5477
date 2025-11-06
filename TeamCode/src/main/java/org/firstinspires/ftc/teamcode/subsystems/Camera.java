@@ -24,11 +24,13 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.groups.ParallelGroup;
 import dev.nextftc.core.commands.groups.SequentialGroup;
+import dev.nextftc.core.commands.utility.InstantCommand;
 import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.core.subsystems.SubsystemGroup;
 import dev.nextftc.ftc.ActiveOpMode;
 import dev.nextftc.hardware.controllable.RunToVelocity;
+import kotlin.time.Instant;
 
 @Configurable
 public class Camera implements Subsystem {
@@ -47,10 +49,15 @@ public class Camera implements Subsystem {
     int obeliskLLIndex = 7;
     int GoalLLIndex = 8;
 
+
     boolean [] arr = {false, false};
     Pose3D botPose = new Pose3D(new Position(DistanceUnit.INCH, 0.0, 0.0, 0.0, 0), new YawPitchRollAngles(AngleUnit.DEGREES, 0.0, 0.0, 0.0, 0));
 
     double[] pose = {0, 0, 0};
+
+    public Command changePipeline(int index) {
+        return new InstantCommand (() -> tom.pipelineSwitch(index));
+    }
 
     public Command Obelisk = new LambdaCommand()
             .setStart(() -> {
@@ -71,6 +78,7 @@ public class Camera implements Subsystem {
             .setStop(interrupted -> {
                 //turn off color sensor
             });
+
 
     public String [] getObelisk() {
         Obelisk.schedule();
@@ -161,7 +169,10 @@ public class Camera implements Subsystem {
     @Override
     public void periodic() {
         pose = getPose(); //Are we making it get pose if a toggle is pressed?
-
+        telemetry.addData("Pose x: ", pose[0]);
+        telemetry.addData("Pose y: ", pose[1]);
+        telemetry.addData("Pose Heading: ", pose[2]);
+        telemetry.update();
         //String [] pat = Camera.INSTANCE.getObelisk();
         //telemetry.addData("Is valid: ", tom.getLatestResult().isValid());
         //telemetry.addData("Exists?: ", tom.getLatestResult() != null);

@@ -37,14 +37,19 @@ public class Tomtest extends NextFTCOpMode {
 
     @Override
     public void onUpdate() {
-        String [] pat = Camera.INSTANCE.getObelisk();
-        telemetry.addData("First item:", pat[0]);
-        telemetry.addData("Second item:", pat[1]);
-        telemetry.addData("Third item", pat[2]);
-        telemetry.addData("stuff", pat[0]);
+//        String [] pat = Camera.INSTANCE.getObelisk();
+//        telemetry.addData("First item:", pat[0]);
+//        telemetry.addData("Second item:", pat[1]);
+//        telemetry.addData("Third item", pat[2]);
+//        telemetry.addData("stuff", pat[0]);
+
+
         boolean [] isValidstuff = Camera.INSTANCE.isValid();
         telemetry.addData("Is it valid: ", isValidstuff[0]);
         telemetry.addData("Is it not null: ", isValidstuff[1]);
         telemetry.update();
+
+
+
     }
 }
