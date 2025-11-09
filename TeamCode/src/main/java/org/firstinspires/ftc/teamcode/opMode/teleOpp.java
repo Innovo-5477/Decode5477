@@ -1,22 +1,12 @@
 package org.firstinspires.ftc.teamcode.opMode;
 import com.bylazar.configurables.annotations.Configurable;
-import com.pedropathing.control.PIDFCoefficients;
-import com.pedropathing.control.PIDFController;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.pancake.Intake;
-import org.firstinspires.ftc.teamcode.subsystems.AutoAim;
 import org.firstinspires.ftc.teamcode.subsystems.Flywheel;
-import org.firstinspires.ftc.teamcode.subsystems.Gate;
 import org.firstinspires.ftc.teamcode.subsystems.Loader;
 
 import dev.nextftc.bindings.BindingManager;
-import dev.nextftc.control.ControlSystem;
-import dev.nextftc.control.feedback.PIDCoefficients;
-import dev.nextftc.control.feedback.PIDController;
 import dev.nextftc.core.commands.Command;
-import dev.nextftc.core.commands.delays.Delay;
-import dev.nextftc.core.commands.groups.SequentialGroup;
 import dev.nextftc.core.commands.utility.InstantCommand;
 import dev.nextftc.core.components.BindingsComponent;
 import dev.nextftc.core.components.SubsystemComponent;
@@ -35,19 +25,17 @@ public class teleOpp extends NextFTCOpMode {
     public teleOpp() {
             addComponents(
                     new SubsystemComponent(
-                            //AutoAim.INSTANCE
                             Flywheel.INSTANCE,
-                            Loader.INSTANCE,
-                            Gate.INSTANCE
+                            Loader.INSTANCE
                     ),
                     BindingsComponent.INSTANCE
             );
         }
 
     private MotorEx frontLeftMotor = new MotorEx("fl").brakeMode().reversed();
-    private MotorEx frontRightMotor = new MotorEx("fr");
+    private MotorEx frontRightMotor = new MotorEx("fr").brakeMode();
     private MotorEx backLeftMotor = new MotorEx("bl").brakeMode().reversed();
-    private MotorEx backRightMotor = new MotorEx("br");
+    private MotorEx backRightMotor = new MotorEx("br").brakeMode();
     private IMUEx imu = new IMUEx("imu", Direction.UP, Direction.LEFT).zeroed();
 
     //public static PIDFCoefficients coefficients = new PIDFCoefficients(0.005, 0, 0, 0);
@@ -72,21 +60,12 @@ public class teleOpp extends NextFTCOpMode {
                 new InstantCommand(() -> imu.zero())
 
         );
-        Gamepads.gamepad1().x()
-                .toggleOnBecomesTrue()
-                .whenBecomesTrue(Flywheel.INSTANCE.shootingVelocity(2500))
-                .whenBecomesFalse(Flywheel.INSTANCE.zeroVelocity);
+        Gamepads.gamepad1().y().whenBecomesTrue(Flywheel.INSTANCE.shootingVelocity(2500));
+        Gamepads.gamepad1().x().whenBecomesTrue(Flywheel.INSTANCE.shootingVelocity(0));
 
-        Gamepads.gamepad1().leftTrigger().inRange(0, 1)
-                .whenBecomesTrue(new SequentialGroup(
-                    Gate.INSTANCE.open_gate,
-                    new Delay(0.1),
-                    Loader.INSTANCE.load_ball,
-                    new Delay(0.1),
-                    Gate.INSTANCE.close_gate,
-                    new Delay(0.1),
-                    Loader.INSTANCE.reset_loader
-                ));
+        Gamepads.gamepad1().leftTrigger().inRange(0.1,1).whenBecomesTrue(Loader.INSTANCE.load_ball);
+        Gamepads.gamepad1().rightTrigger().inRange(0.1,1).whenBecomesTrue(Loader.INSTANCE.reset_loader);
+
 
         /*
         Gamepads.gamepad1().y().whenBecomesTrue(

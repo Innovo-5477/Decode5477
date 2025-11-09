@@ -25,7 +25,7 @@ import dev.nextftc.hardware.impl.MotorEx;
 
 @Configurable
 public class Flywheel implements Subsystem {
-    public static double target = 0;
+    //public static double target = 0;
     public static PIDCoefficients coefficients = new PIDCoefficients(0.005, 0, 0);
     public static BasicFeedforwardParameters ff = new BasicFeedforwardParameters(0.01, 0, 0.2);
     public static final Flywheel INSTANCE = new Flywheel();
@@ -41,18 +41,15 @@ public class Flywheel implements Subsystem {
             .build();
 
     public Command shootingVelocity(double setPoint) {
-        target = setPoint;
         return new InstantCommand(
                 () -> controller.setGoal(
                         new KineticState(
                                 flywheel_motor.getLeader().getCurrentPosition(),
-                                target
+                                setPoint
                         )
                 )
         );
     }
-    public Command zeroVelocity = shootingVelocity(0);
-
 
     @Override
     public void initialize(){
@@ -69,7 +66,7 @@ public class Flywheel implements Subsystem {
             ));
         }
         ActiveOpMode.telemetry().addData("Flywheel velocity: ", flywheel_motor.getLeader().getVelocity());
-        ActiveOpMode.telemetry().addData("Flywheel target: ", target);
+        ActiveOpMode.telemetry().addData("Flywheel target: ", controller.getGoal());
         ActiveOpMode.telemetry().update();
     }
 }

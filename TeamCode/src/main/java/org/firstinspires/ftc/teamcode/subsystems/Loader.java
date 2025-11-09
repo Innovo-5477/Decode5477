@@ -17,7 +17,7 @@ public class Loader implements Subsystem {
     private Loader() { }
 
     ServoEx loader = new ServoEx("loader");
-    public Command load_ball = new SetPosition(loader, .5).requires(this);
-    public Command reset_loader = new SetPosition(loader, 0).requires(this);
+    public Command load_ball = new SetPosition(loader, 1).requires(this);
+    public Command reset_loader = new SetPosition(loader, .1).requires(this);
 
 }

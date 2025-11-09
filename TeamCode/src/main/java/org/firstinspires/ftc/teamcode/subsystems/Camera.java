@@ -52,7 +52,6 @@ public class Camera implements Subsystem {
 
     boolean [] arr = {false, false};
     Pose3D botPose = new Pose3D(new Position(DistanceUnit.INCH, 0.0, 0.0, 0.0, 0), new YawPitchRollAngles(AngleUnit.DEGREES, 0.0, 0.0, 0.0, 0));
-
     double[] pose = {0, 0, 0};
 
     public Command changePipeline(int index) {
