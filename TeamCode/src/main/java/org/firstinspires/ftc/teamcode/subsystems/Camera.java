@@ -47,6 +47,7 @@ public class Camera implements Subsystem {
     //Initializing variables to store pipelines that we use so it's more intuitive
     int obeliskLLIndex = 7;
     int GoalLLIndex = 8;
+    boolean valid = false;
 
 
     boolean [] arr = {false, false};
@@ -120,19 +121,20 @@ public class Camera implements Subsystem {
     @Override
     public void periodic() {
         LLResult result = tom.getLatestResult();
-        if (result != null && result.isValid()) {
+        valid = result != null && result.isValid();
+        if (valid) {
             botPose = result.getBotpose();
             angle = result.getTx();
         }
         pose = getPose();
+        ActiveOpMode.telemetry().addData("Null?", result == null);
+        ActiveOpMode.telemetry().addData("Is Valid?", valid); //Calling isValid method could result in null pointer exception, so I'm j using this compound expression instead
         ActiveOpMode.telemetry().addData("Pose x: ", pose[0]);
         ActiveOpMode.telemetry().addData("Pose y: ", pose[1]);
         ActiveOpMode.telemetry().addData("Pose Heading: ", pose[2]);
         ActiveOpMode.telemetry().addData("Angle: ", angle);
         ActiveOpMode.telemetry().update();
         //String [] pat = Camera.INSTANCE.getObelisk();
-        //telemetry.addData("Is valid: ", tom.getLatestResult().isValid());
-        //telemetry.addData("Exists?: ", tom.getLatestResult() != null);
     }
 
 }
