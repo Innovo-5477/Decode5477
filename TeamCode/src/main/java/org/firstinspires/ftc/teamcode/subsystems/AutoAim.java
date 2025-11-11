@@ -1,4 +1,5 @@
 package org.firstinspires.ftc.teamcode.subsystems;
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
 
 
 import com.bylazar.configurables.annotations.Configurable;
@@ -19,12 +20,12 @@ public class AutoAim extends SubsystemGroup {
     double distance (double [] pose, String alliance){
         double x = pose[0];
         double y = pose[1];
-        double dy = 134 - y;
+        double dy = 131 - y;
         double dx;
         if (alliance.equals("blue")) {
-            dx = 12-x;
+            dx = x-16;
         } else{
-            dx = 134-x;
+            dx = 127giot-x;
         }
         return Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
     }
@@ -37,6 +38,8 @@ public class AutoAim extends SubsystemGroup {
     public void periodic() {
         if (toggle){
             goaldist = distance(Camera.INSTANCE.getPose(), "blue");
+            telemetry.addData( "Distance to goal", goaldist);
+            telemetry.update();
             Flywheel.INSTANCE.shootingVelocity(interpolate(goaldist));
         }
     }
