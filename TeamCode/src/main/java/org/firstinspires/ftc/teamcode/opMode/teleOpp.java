@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.opMode;
 import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.subsystems.AutoAim;
 import org.firstinspires.ftc.teamcode.subsystems.Flywheel;
 import org.firstinspires.ftc.teamcode.subsystems.Loader;
 
@@ -26,7 +27,8 @@ public class teleOpp extends NextFTCOpMode {
             addComponents(
                     new SubsystemComponent(
                             Flywheel.INSTANCE,
-                            Loader.INSTANCE
+                            Loader.INSTANCE,
+                            AutoAim.INSTANCE
                     ),
                     BindingsComponent.INSTANCE
             );

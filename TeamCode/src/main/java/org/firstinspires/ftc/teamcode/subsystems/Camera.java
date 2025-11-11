@@ -43,7 +43,6 @@ public class Camera implements Subsystem {
     String [] gulp = {"G", "U", "LP"};
     int fiducialID = 0;
     double angle = 0;
-    boolean endLoop = false;
 
     //Initializing variables to store pipelines that we use so it's more intuitive
     int obeliskLLIndex = 7;
@@ -92,60 +91,11 @@ public class Camera implements Subsystem {
         }
         else { return gulp; }
     }
-
-    public Command goalAngle = new LambdaCommand()
-            .setStart(() -> {
-                angle = 1e-99;
-                tom.pipelineSwitch(GoalLLIndex);
-            })
-            .setUpdate(() -> {
-                LLResult result = tom.getLatestResult();
-                if (result != null && result.isValid()) {
-                    angle = result.getTx();
-                    /*
-                    LLResultTypes.FiducialResult fiduicalResult = result.getFiducialResults().get(0);
-                    if ((fiduicalResult.getFiducialId() == 20) || (fiduicalResult.getFiducialId() == 24)) {
-                        angle = result.getTx();
-                    }
-                    */
-                }
-            })
-            .setStop(interrupted -> {})
-            .setIsDone(() -> (angle != 1e-99)) //Command runs until angle has changed
-            .requires(tom)
-            .setInterruptible(true)
-            .setStop(interrupted -> {
-                //turn off color sensor
-            });
     public double getAngle() {
-        goalAngle.schedule();
         return angle;
     }
 
-    public Command setPose = new LambdaCommand()
-            .setStart(() -> {
-                botPose = new Pose3D(new Position(DistanceUnit.INCH, 0.0, 0.0, 0.0, 0), new YawPitchRollAngles(AngleUnit.DEGREES, 0.0, 0.0, 0.0, 0));
-                endLoop = false;
-            })
-            .setUpdate(() -> {
-                LLResult result = tom.getLatestResult();
-                if (result != null && result.isValid()) {
-                    botPose = result.getBotpose();
-                    endLoop = true;
-                }
-            })
-            .setStop(interrupted -> {})
-            .setIsDone(() -> (endLoop)) //Could be a source of error here
-            .requires(tom)
-            .setInterruptible(true)
-            .setStop(interrupted -> {
-                //turn off color sensor
-            });
-
-
     public double[] getPose(){
-        setPose.schedule();
-        //Idk what these x and y coordinates are relative to, we'll have to see when testing
         pose[0] = botPose.getPosition().x;
         pose[1] = botPose.getPosition().z; //I think it's z
         pose[2] = botPose.getOrientation().getYaw(); //I'm pretty sure it's yaw, but I need to verify when we use it
@@ -162,16 +112,24 @@ public class Camera implements Subsystem {
     public void initialize() {
         tom = ActiveOpMode.hardwareMap().get(Limelight3A.class, "tom");
         tom.setPollRateHz(90);
-        tom.pipelineSwitch(obeliskLLIndex);
+        tom.pipelineSwitch(GoalLLIndex);
         tom.start();
+        botPose = new Pose3D(new Position(DistanceUnit.INCH, 0.0, 0.0, 0.0, 0), new YawPitchRollAngles(AngleUnit.DEGREES, 0.0, 0.0, 0.0, 0));
     }
+
     @Override
     public void periodic() {
-        pose = getPose(); //Are we making it get pose if a toggle is pressed?
-        telemetry.addData("Pose x: ", pose[0]);
-        telemetry.addData("Pose y: ", pose[1]);
-        telemetry.addData("Pose Heading: ", pose[2]);
-        telemetry.update();
+        LLResult result = tom.getLatestResult();
+        if (result != null && result.isValid()) {
+            botPose = result.getBotpose();
+            angle = result.getTx();
+        }
+        pose = getPose();
+        ActiveOpMode.telemetry().addData("Pose x: ", pose[0]);
+        ActiveOpMode.telemetry().addData("Pose y: ", pose[1]);
+        ActiveOpMode.telemetry().addData("Pose Heading: ", pose[2]);
+        ActiveOpMode.telemetry().addData("Angle: ", angle);
+        ActiveOpMode.telemetry().update();
         //String [] pat = Camera.INSTANCE.getObelisk();
         //telemetry.addData("Is valid: ", tom.getLatestResult().isValid());
         //telemetry.addData("Exists?: ", tom.getLatestResult() != null);

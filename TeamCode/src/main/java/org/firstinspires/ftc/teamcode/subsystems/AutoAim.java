@@ -4,6 +4,7 @@ package org.firstinspires.ftc.teamcode.subsystems;
 import com.bylazar.configurables.annotations.Configurable;
 
 import dev.nextftc.core.subsystems.SubsystemGroup;
+import dev.nextftc.ftc.ActiveOpMode;
 
 @Configurable
 public class AutoAim extends SubsystemGroup {
@@ -12,7 +13,6 @@ public class AutoAim extends SubsystemGroup {
     double goaldist = 0;
     private AutoAim() {
         super(
-                Flywheel.INSTANCE,
                 Camera.INSTANCE
         );
     }
@@ -35,10 +35,9 @@ public class AutoAim extends SubsystemGroup {
     }
 
     public void periodic() {
-        if (toggle){
-            goaldist = distance(Camera.INSTANCE.getPose(), "blue");
-            Flywheel.INSTANCE.shootingVelocity(interpolate(goaldist));
-        }
+        goaldist = distance(Camera.INSTANCE.getPose(), "blue");
+        ActiveOpMode.telemetry().addData("Goal distance", goaldist);
+        ActiveOpMode.telemetry().update();
     }
 }
 
