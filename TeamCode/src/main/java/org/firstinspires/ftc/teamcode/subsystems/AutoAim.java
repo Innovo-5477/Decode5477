@@ -25,7 +25,7 @@ public class AutoAim extends SubsystemGroup {
         if (alliance.equals("blue")) {
             dx = x-16;
         } else{
-            dx = 127giot-x;
+            dx = 127-x;
         }
         return Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
     }
