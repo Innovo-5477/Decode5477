@@ -32,6 +32,7 @@ public class AutoAim extends SubsystemGroup {
     double interpolate (double distance){
         //this is where the linerp on distance will go
         return distance * 10;
+
     }
 
     public void periodic() {
