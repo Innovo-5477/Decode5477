@@ -3,6 +3,7 @@ import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.subsystems.AutoAim;
+import org.firstinspires.ftc.teamcode.subsystems.Camera;
 import org.firstinspires.ftc.teamcode.subsystems.Flywheel;
 import org.firstinspires.ftc.teamcode.subsystems.Loader;
 
@@ -28,7 +29,7 @@ public class teleOpp extends NextFTCOpMode {
                     new SubsystemComponent(
                             Flywheel.INSTANCE,
                             Loader.INSTANCE,
-                            AutoAim.INSTANCE
+                            Camera.INSTANCE
                     ),
                     BindingsComponent.INSTANCE
             );
@@ -38,7 +39,7 @@ public class teleOpp extends NextFTCOpMode {
     private MotorEx frontRightMotor = new MotorEx("fr").brakeMode();
     private MotorEx backLeftMotor = new MotorEx("bl").brakeMode().reversed();
     private MotorEx backRightMotor = new MotorEx("br").brakeMode();
-    private IMUEx imu = new IMUEx("imu", Direction.UP, Direction.LEFT).zeroed();
+    //private IMUEx imu = new IMUEx("imu", Direction.LEFT, Direction.FORWARD).zeroed();
 
     //public static PIDFCoefficients coefficients = new PIDFCoefficients(0.005, 0, 0, 0);
     //PIDFController headingController = new PIDFController(coefficients);
@@ -53,15 +54,18 @@ public class teleOpp extends NextFTCOpMode {
                 backRightMotor,
                 Gamepads.gamepad1().leftStickY().negate(),
                 Gamepads.gamepad1().leftStickX(),
-                Gamepads.gamepad1().rightStickX(),
-                new FieldCentric(imu)
+                Gamepads.gamepad1().rightStickX()
+                //new FieldCentric(imu)
         );
         driverControlled.schedule();
 
+        /*
         Gamepads.gamepad1().dpadUp().whenBecomesTrue(
                 new InstantCommand(() -> imu.zero())
 
         );
+
+         */
         Gamepads.gamepad1().y().whenBecomesTrue(Flywheel.INSTANCE.shootingVelocity(2500));
         Gamepads.gamepad1().x().whenBecomesTrue(Flywheel.INSTANCE.shootingVelocity(0));
 

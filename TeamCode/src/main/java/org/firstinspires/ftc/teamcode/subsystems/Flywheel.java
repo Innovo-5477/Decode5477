@@ -65,8 +65,11 @@ public class Flywheel implements Subsystem {
                     )
             ));
         }
+        /*
         ActiveOpMode.telemetry().addData("Flywheel velocity: ", flywheel_motor.getLeader().getVelocity());
         ActiveOpMode.telemetry().addData("Flywheel target: ", controller.getGoal());
         ActiveOpMode.telemetry().update();
+
+         */
     }
 }

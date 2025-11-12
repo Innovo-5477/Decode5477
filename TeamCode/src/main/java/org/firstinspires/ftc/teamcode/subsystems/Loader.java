@@ -4,6 +4,7 @@ import com.bylazar.configurables.annotations.Configurable;
 
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.subsystems.Subsystem;
+import dev.nextftc.ftc.ActiveOpMode;
 import dev.nextftc.hardware.impl.ServoEx;
 import dev.nextftc.hardware.positionable.ServoGroup;
 import dev.nextftc.hardware.positionable.SetPosition;
@@ -17,7 +18,11 @@ public class Loader implements Subsystem {
     private Loader() { }
 
     ServoEx loader = new ServoEx("loader");
-    public Command load_ball = new SetPosition(loader, 1).requires(this);
-    public Command reset_loader = new SetPosition(loader, .1).requires(this);
-
+    public Command load_ball = new SetPosition(loader, .5).requires(this);
+    public Command reset_loader = new SetPosition(loader, .405).requires(this);
+    @Override
+    public void periodic() {
+        //ActiveOpMode.telemetry().addData("Loader position: ", loader.getPosition());
+        //ActiveOpMode.telemetry().update();
+    }
 }

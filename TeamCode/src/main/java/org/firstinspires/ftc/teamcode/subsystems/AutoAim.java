@@ -37,8 +37,8 @@ public class AutoAim extends SubsystemGroup {
 
     public void periodic() {
         goaldist = distance(Camera.INSTANCE.getPose(), "blue");
-        ActiveOpMode.telemetry().addData("Goal distance", goaldist);
-        ActiveOpMode.telemetry().update();
+        //ActiveOpMode.telemetry().addData("Goal distance", goaldist);
+        //ActiveOpMode.telemetry().update();
     }
 }
 

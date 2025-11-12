@@ -96,9 +96,9 @@ public class Camera implements Subsystem {
     }
 
     public double[] getPose(){
-        pose[0] = botPose.getPosition().x;
-        pose[1] = botPose.getPosition().z; //I think it's z
-        pose[2] = botPose.getOrientation().getYaw(); //I'm pretty sure it's yaw, but I need to verify when we use it
+        pose[0] = metersToInches(botPose.getPosition().x) + 72;
+        pose[1] = metersToInches(botPose.getPosition().y) + 72; //I think it's z
+        pose[2] = botPose.getOrientation().getYaw() - 90; //I'm pretty sure it's yaw, but I need to verify when we use it
         return pose;
     }
     public boolean [] isValid() {
@@ -125,14 +125,23 @@ public class Camera implements Subsystem {
             angle = result.getTx();
         }
         pose = getPose();
+
         ActiveOpMode.telemetry().addData("Pose x: ", pose[0]);
         ActiveOpMode.telemetry().addData("Pose y: ", pose[1]);
         ActiveOpMode.telemetry().addData("Pose Heading: ", pose[2]);
         ActiveOpMode.telemetry().addData("Angle: ", angle);
+        ActiveOpMode.telemetry().addData("Full pose: ", botPose);
+
         ActiveOpMode.telemetry().update();
+
+
         //String [] pat = Camera.INSTANCE.getObelisk();
         //telemetry.addData("Is valid: ", tom.getLatestResult().isValid());
         //telemetry.addData("Exists?: ", tom.getLatestResult() != null);
+    }
+
+    public double metersToInches(double meters) {
+        return meters/0.0254;
     }
 
 }

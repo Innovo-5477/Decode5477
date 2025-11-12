@@ -56,19 +56,19 @@ public class sampleNextPedroAuto extends NextFTCOpMode {
         return new SequentialGroup(
                 Flywheel.INSTANCE.shootingVelocity(2000),
                 new FollowPath(ScorePreload),
-                new Delay(.5),
+                new Delay(1),
                 Loader.INSTANCE.load_ball,
-                new Delay(.5),
+                new Delay(1),
                 Loader.INSTANCE.reset_loader,
-                new Delay(.5),
+                new Delay(1),
                 Loader.INSTANCE.load_ball,
-                new Delay(.5),
+                new Delay(1),
                 Loader.INSTANCE.reset_loader,
-                new Delay(.5),
+                new Delay(1),
                 Loader.INSTANCE.load_ball,
-                new Delay(.5),
+                new Delay(1),
                 Loader.INSTANCE.reset_loader,
-                new Delay(.5),
+                new Delay(1),
                 new FollowPath(Leave)
         );
     }
