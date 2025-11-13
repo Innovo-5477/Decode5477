@@ -19,12 +19,12 @@ public class AutoAim extends SubsystemGroup {
     double distance (double [] pose, String alliance){
         double x = pose[0];
         double y = pose[1];
-        double dy = 134 - y;
+        double dy = 130 - y;
         double dx;
         if (alliance.equals("blue")) {
-            dx = 12-x;
+            dx = 15-x;
         } else{
-            dx = 134-x;
+            dx = 130-x;
         }
         return Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
     }
@@ -36,7 +36,7 @@ public class AutoAim extends SubsystemGroup {
     }
 
     public void periodic() {
-        goaldist = distance(Camera.INSTANCE.getPose(), "blue");
+        //goaldist = distance(Camera.INSTANCE.getPose(), "blue");
         //ActiveOpMode.telemetry().addData("Goal distance", goaldist);
         //ActiveOpMode.telemetry().update();
     }
