@@ -166,6 +166,7 @@ public class Camera implements Subsystem {
             ActiveOpMode.telemetry().addData("Baron z: ", baronz);
             ActiveOpMode.telemetry().addData("Baron distance: ", distance2D);
             ActiveOpMode.telemetry().update();
+
         }
 
 
