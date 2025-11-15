@@ -25,64 +25,57 @@ import dev.nextftc.hardware.impl.MotorEx;
 
 @Configurable
 public class Flywheel implements Subsystem {
-    //public static double target = 0;
-    public static PIDCoefficients coefficients = new PIDCoefficients(0.006, 0, 0.001);
-    public static BasicFeedforwardParameters ff = new BasicFeedforwardParameters(0, 0, 0.01);
+    public static PIDCoefficients Lcoefficients = new PIDCoefficients(0.006, 0, 0.001);
+    public static PIDCoefficients Rcoefficients = new PIDCoefficients(0.006, 0, 0.001);
+
+    public static BasicFeedforwardParameters Lff = new BasicFeedforwardParameters(0, 0, 0.01);
+    public static BasicFeedforwardParameters Rff = new BasicFeedforwardParameters(0, 0, 0.01);
+
     public static final Flywheel INSTANCE = new Flywheel();
     public double veloc_targ = 900;
 
     private Flywheel() { }
-    MotorGroup flywheel_motor = new MotorGroup(
-            new MotorEx("leftFlywheel"),
-            new MotorEx("rightFlywheel").reversed()
-    );
 
-    ControlSystem controller = ControlSystem.builder()
-            .velPid(coefficients)
-            .basicFF(ff)
+    MotorEx l = new MotorEx("leftFlywheel");
+    MotorEx r = new MotorEx("rightFlywheel");
+
+    ControlSystem leftController = ControlSystem.builder()
+            .velPid(Lcoefficients)
+            .basicFF(Lff)
             .build();
 
-    public Command shootingVelocity(double setPoint) {
-        return new InstantCommand(
-                () -> controller.setGoal(
-                        new KineticState(
-                                flywheel_motor.getLeader().getCurrentPosition(),
-                                setPoint
-                        )
-                )
-        );
+    ControlSystem rightController = ControlSystem.builder()
+            .velPid(Rcoefficients)
+            .basicFF(Rff)
+            .build();
+
+    public Command shootingVelocity(DoubleSupplier setPointSupplier) {
+        return new InstantCommand(() -> {
+            double setPoint = setPointSupplier.getAsDouble(); // Get value when executed
+            leftController.setGoal(new KineticState(l.getCurrentPosition(), setPoint));
+            rightController.setGoal(new KineticState(r.getCurrentPosition(), -setPoint));
+        });
     }
 
-    public Command shoottoVelTarget() {
-        return new InstantCommand(
-                () -> controller.setGoal(
-                        new KineticState(
-                                flywheel_motor.getLeader().getCurrentPosition(),
-                                veloc_targ
-                        )
-                )
-        );
-    }
-
-    @Override
-    public void initialize(){
-
-    }
     @Override
     public void periodic() {
         if (ActiveOpMode.opModeIsActive()) {
-            flywheel_motor.setPower(controller.calculate(
-                    new KineticState(
-                            flywheel_motor.getLeader().getCurrentPosition(),
-                            flywheel_motor.getLeader().getVelocity()
-                    )
-            ));
+            l.setPower(leftController.calculate(new KineticState(
+                    l.getCurrentPosition(), l.getVelocity()
+            )));
+
+            r.setPower(rightController.calculate(new KineticState(
+                    r.getCurrentPosition(), r.getVelocity()
+            )));
         }
 
-        ActiveOpMode.telemetry().addData("Flywheel target: " ,veloc_targ);
-        ActiveOpMode.telemetry().addData("Flywheel Leader velocity: ", flywheel_motor.getLeader().getVelocity());
-        ActiveOpMode.telemetry().addData("Flywheel Follower velocity: ", flywheel_motor.getFollowers()[0].getVelocity());
-
+        /*
+        ActiveOpMode.telemetry().addData("Flywheel target", veloc_targ);
+        ActiveOpMode.telemetry().addData("Left velocity", l.getVelocity());
+        ActiveOpMode.telemetry().addData("Right velocity", r.getVelocity());
         ActiveOpMode.telemetry().update();
+
+         */
+
     }
 }

@@ -4,7 +4,7 @@ import com.pedropathing.control.PIDFCoefficients;
 import com.pedropathing.control.PIDFController;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.subsystems.AutoAim;
+import org.firstinspires.ftc.teamcode.retired.Tom;
 import org.firstinspires.ftc.teamcode.subsystems.Camera;
 import org.firstinspires.ftc.teamcode.subsystems.Flywheel;
 import org.firstinspires.ftc.teamcode.subsystems.Loader;
@@ -16,11 +16,8 @@ import dev.nextftc.core.components.BindingsComponent;
 import dev.nextftc.core.components.SubsystemComponent;
 import dev.nextftc.ftc.Gamepads;
 import dev.nextftc.ftc.NextFTCOpMode;
-import dev.nextftc.hardware.driving.FieldCentric;
 import dev.nextftc.hardware.driving.MecanumDriverControlled;
 
-import dev.nextftc.hardware.impl.Direction;
-import dev.nextftc.hardware.impl.IMUEx;
 import dev.nextftc.hardware.impl.MotorEx;
 
 @TeleOp(name = "field centric teleop")
@@ -45,9 +42,10 @@ public class teleOpp extends NextFTCOpMode {
     double targetHeading = Math.toRadians(180); // Radians
     PIDFController controller = new PIDFController(new PIDFCoefficients(0.1, 0, 0.01, 0));
     double heading_error = 0;
-    boolean heading_lock = false;
+    boolean heading_lock;
     @Override
     public void onStartButtonPressed() {
+        heading_lock = false;
 
         Command driverControlled = new MecanumDriverControlled(
                 frontLeftMotor,
@@ -69,14 +67,14 @@ public class teleOpp extends NextFTCOpMode {
 
         );
 
-        Gamepads.gamepad1().y().whenBecomesTrue(Flywheel.INSTANCE.shoottoVelTarget());
-        Gamepads.gamepad1().x().whenBecomesTrue(Flywheel.INSTANCE.shootingVelocity(0));
+        Gamepads.gamepad1().y().whenBecomesTrue(Flywheel.INSTANCE.shootingVelocity(()->Flywheel.INSTANCE.veloc_targ));
+        Gamepads.gamepad1().x().whenBecomesTrue(Flywheel.INSTANCE.shootingVelocity(()->0));
 
         Gamepads.gamepad1().dpadUp().whenBecomesTrue(
-                () -> Flywheel.INSTANCE.veloc_targ += 20
+                () -> Flywheel.INSTANCE.veloc_targ += 10
         );
         Gamepads.gamepad1().dpadDown().whenBecomesTrue(
-                () -> Flywheel.INSTANCE.veloc_targ -= 20
+                () -> Flywheel.INSTANCE.veloc_targ -= 10
         );
 
         Gamepads.gamepad1().leftTrigger().inRange(0.1,1).whenBecomesTrue(Loader.INSTANCE.load_ball);

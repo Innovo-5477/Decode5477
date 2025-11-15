@@ -3,8 +3,9 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.bylazar.configurables.annotations.Configurable;
 
+import org.firstinspires.ftc.teamcode.retired.Tom;
+
 import dev.nextftc.core.subsystems.SubsystemGroup;
-import dev.nextftc.ftc.ActiveOpMode;
 
 @Configurable
 public class AutoAim extends SubsystemGroup {
@@ -13,7 +14,7 @@ public class AutoAim extends SubsystemGroup {
     double goaldist = 0;
     private AutoAim() {
         super(
-                Camera.INSTANCE
+                Tom.INSTANCE
         );
     }
     double distance (double [] pose, String alliance){
