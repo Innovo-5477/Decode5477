@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.opMode;
 import com.bylazar.configurables.annotations.Configurable;
+import com.pedropathing.control.PIDFCoefficients;
+import com.pedropathing.control.PIDFController;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.subsystems.AutoAim;
@@ -39,11 +41,11 @@ public class teleOpp extends NextFTCOpMode {
     private MotorEx frontRightMotor = new MotorEx("fr").brakeMode();
     private MotorEx backLeftMotor = new MotorEx("bl").brakeMode().reversed();
     private MotorEx backRightMotor = new MotorEx("br").brakeMode();
-    //private IMUEx imu = new IMUEx("imu", Direction.LEFT, Direction.FORWARD).zeroed();
 
-    //public static PIDFCoefficients coefficients = new PIDFCoefficients(0.005, 0, 0, 0);
-    //PIDFController headingController = new PIDFController(coefficients);
-    //double heading_error = 0;
+    double targetHeading = Math.toRadians(180); // Radians
+    PIDFController controller = new PIDFController(new PIDFCoefficients(0.1, 0, 0.01, 0));
+    double heading_error = 0;
+    boolean heading_lock = false;
     @Override
     public void onStartButtonPressed() {
 
@@ -54,20 +56,28 @@ public class teleOpp extends NextFTCOpMode {
                 backRightMotor,
                 Gamepads.gamepad1().leftStickY().negate(),
                 Gamepads.gamepad1().leftStickX(),
-                Gamepads.gamepad1().rightStickX()
+                () -> heading_lock
+                        ? 1
+                        : Gamepads.gamepad1().rightStickX().get()
                 //new FieldCentric(imu)
         );
         driverControlled.schedule();
 
-        /*
-        Gamepads.gamepad1().dpadUp().whenBecomesTrue(
-                new InstantCommand(() -> imu.zero())
+
+        Gamepads.gamepad1().b().whenBecomesTrue(
+                new InstantCommand(() -> heading_lock = !heading_lock)
 
         );
 
-         */
-        Gamepads.gamepad1().y().whenBecomesTrue(Flywheel.INSTANCE.shootingVelocity(2500));
+        Gamepads.gamepad1().y().whenBecomesTrue(Flywheel.INSTANCE.shoottoVelTarget());
         Gamepads.gamepad1().x().whenBecomesTrue(Flywheel.INSTANCE.shootingVelocity(0));
+
+        Gamepads.gamepad1().dpadUp().whenBecomesTrue(
+                () -> Flywheel.INSTANCE.veloc_targ += 20
+        );
+        Gamepads.gamepad1().dpadDown().whenBecomesTrue(
+                () -> Flywheel.INSTANCE.veloc_targ -= 20
+        );
 
         Gamepads.gamepad1().leftTrigger().inRange(0.1,1).whenBecomesTrue(Loader.INSTANCE.load_ball);
         Gamepads.gamepad1().rightTrigger().inRange(0.1,1).whenBecomesTrue(Loader.INSTANCE.reset_loader);
@@ -90,7 +100,7 @@ public class teleOpp extends NextFTCOpMode {
     @Override
     public void onUpdate(){
         BindingManager.update();
-        //heading_error = 45 - Math.toDegrees(imu.get().getValue());
+        //heading_error = 180 - Math.toDegrees(Camera.INSTANCE.getAngle());
         //heading_error = Math.IEEEremainder(heading_error, 2 * Math.PI);
     }
 

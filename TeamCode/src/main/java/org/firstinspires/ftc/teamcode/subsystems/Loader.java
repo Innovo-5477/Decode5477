@@ -18,8 +18,8 @@ public class Loader implements Subsystem {
     private Loader() { }
 
     ServoEx loader = new ServoEx("loader");
-    public Command load_ball = new SetPosition(loader, .5).requires(this);
-    public Command reset_loader = new SetPosition(loader, .405).requires(this);
+    public Command load_ball = new SetPosition(loader, .52).requires(this);
+    public Command reset_loader = new SetPosition(loader, .35).requires(this);
     @Override
     public void periodic() {
         //ActiveOpMode.telemetry().addData("Loader position: ", loader.getPosition());

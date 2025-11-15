@@ -51,6 +51,8 @@ public class Camera implements Subsystem {
     int fiducialID = 0;
     double angle = 0;
 
+    double baronx = 0;
+    double baronz = 0;
     //Initializing variables to store pipelines that we use so it's more intuitive
     int obeliskLLIndex = 7;
     int GoalLLIndex = 8;
@@ -60,6 +62,7 @@ public class Camera implements Subsystem {
     Pose3D botPose = new Pose3D(new Position(DistanceUnit.INCH, 0.0, 0.0, 0.0, 0), new YawPitchRollAngles(AngleUnit.DEGREES, 0.0, 0.0, 0.0, 0));
     double[] pose = {0, 0, 0};
 
+    double distance2D = 0;
     public Command changePipeline(int index) {
         return new InstantCommand (() -> tom.pipelineSwitch(index));
     }
@@ -146,26 +149,28 @@ public class Camera implements Subsystem {
             ActiveOpMode.telemetry().addData("Red Distance: ", distance(pose, "red"));
             ActiveOpMode.telemetry().update();
             */
-
-
-            List<LLResultTypes.FiducialResult> r = tom.getLatestResult().getFiducialResults();
-            LLResultTypes.FiducialResult target = null;
-            for (LLResultTypes.FiducialResult i: r) {
-                if (i != null) {
-                    target = i;
-                    break;
+            LLResult result = tom.getLatestResult();
+            if (result != null && result.isValid()) {
+                List<LLResultTypes.FiducialResult> r = tom.getLatestResult().getFiducialResults();
+                LLResultTypes.FiducialResult target = null;
+                for (LLResultTypes.FiducialResult i: r) {
+                    if (i != null) {
+                        target = i;
+                        break;
+                    }
                 }
+
+                if (target != null) {
+                    baronx = metersToInches(target.getCameraPoseTargetSpace().getPosition().x);
+                    baronz = metersToInches(target.getCameraPoseTargetSpace().getPosition().z);
+                    distance2D = Math.sqrt(Math.pow(baronx, 2) + Math.pow(baronz, 2));
+                }
+                ActiveOpMode.telemetry().addData("Baron x: ", baronx);
+                ActiveOpMode.telemetry().addData("Baron z: ", baronz);
+                ActiveOpMode.telemetry().addData("Baron distance: ", distance2D);
+                ActiveOpMode.telemetry().update();
             }
-            double baronx = metersToInches(target.getCameraPoseTargetSpace().getPosition().x);
-            double baronz = metersToInches(target.getCameraPoseTargetSpace().getPosition().z);
-            double distance2D = Math.sqrt(Math.pow(baronx, 2) + Math.pow(baronz, 2));
-            Vector e = new Vector();
-            e.setOrthogonalComponents(baronx, baronz);
-            double mag = e.getMagnitude();
-            ActiveOpMode.telemetry().addData("Baron x: ", baronx);
-            ActiveOpMode.telemetry().addData("Baron z: ", baronz);
-            ActiveOpMode.telemetry().addData("Baron distance: ", distance2D);
-            ActiveOpMode.telemetry().update();
+
 
         }
 

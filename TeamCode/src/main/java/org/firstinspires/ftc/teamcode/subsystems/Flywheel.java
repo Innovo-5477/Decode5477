@@ -26,9 +26,11 @@ import dev.nextftc.hardware.impl.MotorEx;
 @Configurable
 public class Flywheel implements Subsystem {
     //public static double target = 0;
-    public static PIDCoefficients coefficients = new PIDCoefficients(0.005, 0, 0);
-    public static BasicFeedforwardParameters ff = new BasicFeedforwardParameters(0.01, 0, 0.2);
+    public static PIDCoefficients coefficients = new PIDCoefficients(0.006, 0, 0.001);
+    public static BasicFeedforwardParameters ff = new BasicFeedforwardParameters(0, 0, 0.01);
     public static final Flywheel INSTANCE = new Flywheel();
+    public double veloc_targ = 900;
+
     private Flywheel() { }
     MotorGroup flywheel_motor = new MotorGroup(
             new MotorEx("leftFlywheel"),
@@ -51,6 +53,17 @@ public class Flywheel implements Subsystem {
         );
     }
 
+    public Command shoottoVelTarget() {
+        return new InstantCommand(
+                () -> controller.setGoal(
+                        new KineticState(
+                                flywheel_motor.getLeader().getCurrentPosition(),
+                                veloc_targ
+                        )
+                )
+        );
+    }
+
     @Override
     public void initialize(){
 
@@ -65,11 +78,11 @@ public class Flywheel implements Subsystem {
                     )
             ));
         }
-        /*
-        ActiveOpMode.telemetry().addData("Flywheel velocity: ", flywheel_motor.getLeader().getVelocity());
-        ActiveOpMode.telemetry().addData("Flywheel target: ", controller.getGoal());
-        ActiveOpMode.telemetry().update();
 
-         */
+        ActiveOpMode.telemetry().addData("Flywheel target: " ,veloc_targ);
+        ActiveOpMode.telemetry().addData("Flywheel Leader velocity: ", flywheel_motor.getLeader().getVelocity());
+        ActiveOpMode.telemetry().addData("Flywheel Follower velocity: ", flywheel_motor.getFollowers()[0].getVelocity());
+
+        ActiveOpMode.telemetry().update();
     }
 }
