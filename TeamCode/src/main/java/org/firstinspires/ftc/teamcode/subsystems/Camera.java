@@ -51,8 +51,10 @@ public class Camera implements Subsystem {
     int fiducialID = 0;
     double angle = 0;
 
+
     double baronx = 0;
     double baronz = 0;
+    double heading = 0;
     //Initializing variables to store pipelines that we use so it's more intuitive
     int obeliskLLIndex = 7;
     int GoalLLIndex = 8;
@@ -149,6 +151,7 @@ public class Camera implements Subsystem {
             ActiveOpMode.telemetry().addData("Red Distance: ", distance(pose, "red"));
             ActiveOpMode.telemetry().update();
             */
+
             LLResult result = tom.getLatestResult();
             if (result != null && result.isValid()) {
                 List<LLResultTypes.FiducialResult> r = tom.getLatestResult().getFiducialResults();
@@ -163,11 +166,16 @@ public class Camera implements Subsystem {
                 if (target != null) {
                     baronx = metersToInches(target.getCameraPoseTargetSpace().getPosition().x);
                     baronz = metersToInches(target.getCameraPoseTargetSpace().getPosition().z);
+
+                    botPose = result.getBotpose();
+                    heading = botPose.getOrientation().getYaw(AngleUnit.DEGREES);
+
                     distance2D = Math.sqrt(Math.pow(baronx, 2) + Math.pow(baronz, 2));
                 }
                 ActiveOpMode.telemetry().addData("Baron x: ", baronx);
                 ActiveOpMode.telemetry().addData("Baron z: ", baronz);
                 ActiveOpMode.telemetry().addData("Baron distance: ", distance2D);
+                ActiveOpMode.telemetry().addData("Heading: ", heading);
                 ActiveOpMode.telemetry().update();
             }
 
