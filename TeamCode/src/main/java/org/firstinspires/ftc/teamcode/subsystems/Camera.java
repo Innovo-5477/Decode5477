@@ -57,39 +57,26 @@ public class Camera implements Subsystem {
                 pose[1] = detection.robotPose.getPosition().y;
                 pose[2] = detection.robotPose.getOrientation().getYaw(AngleUnit.DEGREES);
                 pose[3] = 1;
-                ActiveOpMode.telemetry().addLine(String.format("PRY %6.1f %6.1f %6.1f  (deg)", detection.ftcPose.pitch, detection.ftcPose.roll, detection.ftcPose.yaw));
-                angleOffset = detection.ftcPose.yaw;
-
-
-                ActiveOpMode.telemetry().addLine(String.format("RBE %6.1f %6.1f %6.1f  (inch, deg, deg)", detection.ftcPose.range, detection.ftcPose.bearing, detection.ftcPose.elevation));
+                //ActiveOpMode.telemetry().addLine(String.format("PRY %6.1f %6.1f %6.1f  (deg)", detection.ftcPose.pitch, detection.ftcPose.roll, detection.ftcPose.yaw));
+                //ActiveOpMode.telemetry().addLine(String.format("RBE %6.1f %6.1f %6.1f  (inch, deg, deg)", detection.ftcPose.range, detection.ftcPose.bearing, detection.ftcPose.elevation));
                 distance2D = Math.sqrt(Math.pow(detection.ftcPose.x,2) + Math.pow(detection.ftcPose.y,2));
                 ActiveOpMode.telemetry().addData("Distance:", distance2D);
 
             } else {
                 ActiveOpMode.telemetry().addLine(String.format("\n==== (ID %d) Unknown", detection.id));
-                ActiveOpMode.telemetry().addLine(String.format("Center %6.0f %6.0f   (pixels)", detection.center.x, detection.center.y));
+                pose[3] = 0;
+                angleOffset = 0;
             }
-        }   // end for() loop
-
-        if (currentDetections.isEmpty()) {
-            pose[3] = 0;
-            angleOffset = 0;
         }
-        // Add "key" information to telemetry
+
         ActiveOpMode.telemetry().addLine("\nkey:\nXYZ = X (Right), Y (Forward), Z (Up) dist.");
-        ActiveOpMode.telemetry().addLine("PRY = Pitch, Roll & Yaw (XYZ Rotation)");
-        ActiveOpMode.telemetry().addLine("RBE = Range, Bearing & Elevation");
-        ActiveOpMode.telemetry().update();
-
-
+        //ActiveOpMode.telemetry().addLine("PRY = Pitch, Roll & Yaw (XYZ Rotation)");
+        //ActiveOpMode.telemetry().addLine("RBE = Range, Bearing & Elevation");
+        //ActiveOpMode.telemetry().update();
     }
 
     public double [] getCamPose() {
         return pose;
-    }
-
-    public double getAngleOffset() {
-        return angleOffset;
     }
 
 

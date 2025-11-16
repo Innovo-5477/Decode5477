@@ -69,13 +69,9 @@ public class Flywheel implements Subsystem {
             )));
         }
 
-        /*
+
         ActiveOpMode.telemetry().addData("Flywheel target", veloc_targ);
         ActiveOpMode.telemetry().addData("Left velocity", l.getVelocity());
         ActiveOpMode.telemetry().addData("Right velocity", r.getVelocity());
-        ActiveOpMode.telemetry().update();
-
-         */
-
     }
 }
