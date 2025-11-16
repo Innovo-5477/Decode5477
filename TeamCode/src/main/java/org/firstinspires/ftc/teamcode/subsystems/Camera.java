@@ -13,6 +13,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
+import org.firstinspires.ftc.robotcore.internal.hardware.android.GpioPin;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
@@ -65,6 +66,8 @@ public class Camera implements Subsystem {
         ActiveOpMode.telemetry().addLine("\nkey:\nXYZ = X (Right), Y (Forward), Z (Up) dist.");
         ActiveOpMode.telemetry().addLine("PRY = Pitch, Roll & Yaw (XYZ Rotation)");
         ActiveOpMode.telemetry().addLine("RBE = Range, Bearing & Elevation");
+        ActiveOpMode.telemetry().update();
+
 
     }
 
