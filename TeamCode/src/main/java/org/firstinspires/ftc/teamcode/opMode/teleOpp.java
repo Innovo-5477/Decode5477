@@ -1,4 +1,5 @@
 package org.firstinspires.ftc.teamcode.opMode;
+
 import com.bylazar.configurables.annotations.Configurable;
 import com.pedropathing.control.PIDFCoefficients;
 import com.pedropathing.control.PIDFController;
@@ -39,15 +40,15 @@ import dev.nextftc.hardware.impl.MotorEx;
 @Configurable
 public class teleOpp extends NextFTCOpMode {
     public teleOpp() {
-            addComponents(
-                    new SubsystemComponent(
-                            Flywheel.INSTANCE,
-                            Loader.INSTANCE,
-                            Camera.INSTANCE
-                    ),
-                    BindingsComponent.INSTANCE
-            );
-        }
+        addComponents(
+                new SubsystemComponent(
+                        Flywheel.INSTANCE,
+                        Loader.INSTANCE,
+                        Camera.INSTANCE
+                ),
+                BindingsComponent.INSTANCE
+        );
+    }
 
     private MotorEx frontLeftMotor = new MotorEx("fl").brakeMode().reversed();
     private MotorEx frontRightMotor = new MotorEx("fr").brakeMode();
@@ -60,10 +61,11 @@ public class teleOpp extends NextFTCOpMode {
     double heading_lock_power = 0;
     boolean heading_lock;
     double distance = 0;
-    double [] camPose = {0, 0, 0, 0};
+    double[] camPose = {0, 0, 0, 0};
     double driverOffset = 0;
 
     private IMUEx imu = new IMUEx("imu", Direction.LEFT, Direction.FORWARD).zeroed();
+
     //GoBildaPinpointDriver odo = hardwareMap.get(GoBildaPinpointDriver.class,"odo");
     @Override
     public void onInit() {
@@ -103,8 +105,8 @@ public class teleOpp extends NextFTCOpMode {
         ); //Resets driver offset
 
 
-        Gamepads.gamepad1().y().whenBecomesTrue(Flywheel.INSTANCE.shootingVelocity(()->Flywheel.INSTANCE.veloc_targ));
-        Gamepads.gamepad1().x().whenBecomesTrue(Flywheel.INSTANCE.shootingVelocity(()->0));
+        Gamepads.gamepad1().y().whenBecomesTrue(Flywheel.INSTANCE.shootingVelocity(() -> Flywheel.INSTANCE.veloc_targ));
+        Gamepads.gamepad1().x().whenBecomesTrue(Flywheel.INSTANCE.shootingVelocity(() -> 0));
 
         Gamepads.gamepad1().dpadUp().whenBecomesTrue(
                 () -> Flywheel.INSTANCE.veloc_targ += 10
@@ -113,32 +115,33 @@ public class teleOpp extends NextFTCOpMode {
                 () -> Flywheel.INSTANCE.veloc_targ -= 10
         );
 
-        Gamepads.gamepad1().leftTrigger().inRange(0.1,1).whenBecomesTrue(Loader.INSTANCE.load_ball);
-        Gamepads.gamepad1().rightTrigger().inRange(0.1,1).whenBecomesTrue(Loader.INSTANCE.reset_loader);
+        Gamepads.gamepad1().leftTrigger().inRange(0.1, 1).whenBecomesTrue(Loader.INSTANCE.load_ball);
+        Gamepads.gamepad1().rightTrigger().inRange(0.1, 1).whenBecomesTrue(Loader.INSTANCE.reset_loader);
     }
 
     @Override
-    public void onUpdate(){
+    public void onUpdate() {
 
         camPose = Camera.INSTANCE.getCamPose();
 
-        /*
+
         if (camPose[3] == 1) {
-            odo.setPosition(new Pose2D(DistanceUnit.INCH, camPose[0], camPose[1], AngleUnit.DEGREES,camPose[2]));
-            angle = AngleOffset;
+            telemetry.addData("Yaw: ", camPose[2]);
+            //odo.setPosition(new Pose2D(DistanceUnit.INCH, camPose[0], camPose[1], AngleUnit.DEGREES,camPose[2]));
+            //angle = AngleOffset;
         }
-        else {
-            angle = 0;
-        }
+//        else {
+//            angle = 0;
+//        }
 
 
-        pose[0] = odo.getPosition().getX(DistanceUnit.INCH);
-        pose[1] = odo.getPosition().getY(DistanceUnit.INCH);
-        pose[2] = odo.getPosition().getHeading(AngleUnit.DEGREES);
+//        pose[0] = odo.getPosition().getX(DistanceUnit.INCH);
+//        pose[1] = odo.getPosition().getY(DistanceUnit.INCH);
+//        pose[2] = odo.getPosition().getHeading(AngleUnit.DEGREES);
 
         //Flywheel.INSTANCE.veloc_targ = interpolate.get(distance) + driverOffset;
 
-         */
+
 
         heading_error = imu.get().inDeg;
         controller.updateError(heading_error);
@@ -152,7 +155,7 @@ public class teleOpp extends NextFTCOpMode {
     }
 
     @Override
-    public void onStop(){
+    public void onStop() {
         BindingManager.reset();
     }
 }
