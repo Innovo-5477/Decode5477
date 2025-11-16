@@ -36,6 +36,8 @@ public class Camera implements Subsystem {
     double angle = 0;
     double heading = 0;
     double distance2D = 0;
+    double [] pose = {0, 0, 0, 0}; // x, y, yaw, boolean num to see if it saw anything
+    double angleOffset = 0;
 
     @Override
     public void initialize() {
@@ -51,7 +53,14 @@ public class Camera implements Subsystem {
             if (detection.metadata != null) {
                 ActiveOpMode.telemetry().addLine(String.format("\n==== (ID %d) %s", detection.id, detection.metadata.name));
                 ActiveOpMode.telemetry().addLine(String.format("XYZ %6.1f %6.1f %6.1f  (inch)", detection.ftcPose.x, detection.ftcPose.y, detection.ftcPose.z));
+                pose[0] = detection.robotPose.getPosition().x;
+                pose[1] = detection.robotPose.getPosition().y;
+                pose[2] = detection.robotPose.getOrientation().getYaw(AngleUnit.DEGREES);
+                pose[3] = 1;
                 ActiveOpMode.telemetry().addLine(String.format("PRY %6.1f %6.1f %6.1f  (deg)", detection.ftcPose.pitch, detection.ftcPose.roll, detection.ftcPose.yaw));
+                angleOffset = detection.ftcPose.yaw;
+
+
                 ActiveOpMode.telemetry().addLine(String.format("RBE %6.1f %6.1f %6.1f  (inch, deg, deg)", detection.ftcPose.range, detection.ftcPose.bearing, detection.ftcPose.elevation));
                 distance2D = Math.sqrt(Math.pow(detection.ftcPose.x,2) + Math.pow(detection.ftcPose.y,2));
                 ActiveOpMode.telemetry().addData("Distance:", distance2D);
@@ -62,6 +71,10 @@ public class Camera implements Subsystem {
             }
         }   // end for() loop
 
+        if (currentDetections.isEmpty()) {
+            pose[3] = 0;
+            angleOffset = 0;
+        }
         // Add "key" information to telemetry
         ActiveOpMode.telemetry().addLine("\nkey:\nXYZ = X (Right), Y (Forward), Z (Up) dist.");
         ActiveOpMode.telemetry().addLine("PRY = Pitch, Roll & Yaw (XYZ Rotation)");
@@ -69,6 +82,14 @@ public class Camera implements Subsystem {
         ActiveOpMode.telemetry().update();
 
 
+    }
+
+    public double [] getCamPose() {
+        return pose;
+    }
+
+    public double getAngleOffset() {
+        return angleOffset;
     }
 
 

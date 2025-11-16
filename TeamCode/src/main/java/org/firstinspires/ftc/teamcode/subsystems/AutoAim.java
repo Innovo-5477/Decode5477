@@ -17,15 +17,15 @@ public class AutoAim extends SubsystemGroup {
                 Tom.INSTANCE
         );
     }
-    double distance (double [] pose, String alliance){
+    public double getDistance (double [] pose, String alliance){
         double x = pose[0];
         double y = pose[1];
-        double dy = 130 - y;
-        double dx;
+        double dx = x+58;
+        double dy;
         if (alliance.equals("blue")) {
-            dx = 15-x;
+            dy = y-55;
         } else{
-            dx = 130-x;
+            dy = y+55;
         }
         return Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
     }
