@@ -23,7 +23,10 @@ import org.firstinspires.ftc.teamcode.subsystems.Flywheel;
 import org.firstinspires.ftc.teamcode.subsystems.InterpLUT;
 import org.firstinspires.ftc.teamcode.subsystems.Loader;
 
+import java.util.function.BooleanSupplier;
+
 import dev.nextftc.bindings.BindingManager;
+import dev.nextftc.control.feedback.PIDCoefficients;
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.utility.InstantCommand;
 import dev.nextftc.core.components.BindingsComponent;
@@ -56,7 +59,8 @@ public class teleOpp extends NextFTCOpMode {
     private MotorEx backRightMotor = new MotorEx("br").brakeMode();
 
     InterpLUT interpolate = new InterpLUT(); //am I creating the class the right way even?
-    PIDFController controller = new PIDFController(new PIDFCoefficients(0.01, 0, 0.005, 0));
+    public static PIDFCoefficients headingPIDcoefficients = new PIDFCoefficients(0.0001, 0, 0, 0);
+    PIDFController controller = new PIDFController(headingPIDcoefficients);
     double heading_error = 0;
     double heading_lock_power = 0;
     boolean heading_lock;
@@ -64,15 +68,16 @@ public class teleOpp extends NextFTCOpMode {
     double[] camPose = {0, 0, 0, 0};
     double driverOffset = 0;
 
-    private IMUEx imu = new IMUEx("imu", Direction.LEFT, Direction.FORWARD).zeroed();
+    //private IMUEx imu = new IMUEx("imu", Direction.LEFT, Direction.FORWARD).zeroed();
 
-    //GoBildaPinpointDriver odo = hardwareMap.get(GoBildaPinpointDriver.class,"odo");
+    GoBildaPinpointDriver odo;
     @Override
     public void onInit() {
-        //odo.setOffsets(-84.0, -168.0, DistanceUnit.MM); //Offsets in coding doc
-        //odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD); //what pods do we have
-        //odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD); //x supposed to increase when moving forward, y supposed to increase when moving left
-        //odo.resetPosAndIMU();
+        odo = hardwareMap.get(GoBildaPinpointDriver.class,"pinpoint");
+        odo.setOffsets(-4, 4, DistanceUnit.INCH);
+        odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_SWINGARM_POD);
+        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED, GoBildaPinpointDriver.EncoderDirection.REVERSED); //x supposed to increase when moving forward, y supposed to increase when moving left
+        odo.resetPosAndIMU();
     }
 
     @Override
@@ -95,9 +100,8 @@ public class teleOpp extends NextFTCOpMode {
                 new InstantCommand(() -> heading_lock = !heading_lock)
 
         );
-
         Gamepads.gamepad1().leftStickButton().whenBecomesTrue(
-                new InstantCommand(() -> imu.zero())
+                new InstantCommand(() -> odo.resetPosAndIMU())
         ); //Command to reset imu
 
         Gamepads.gamepad1().leftBumper().whenBecomesTrue(
@@ -115,43 +119,48 @@ public class teleOpp extends NextFTCOpMode {
                 () -> Flywheel.INSTANCE.veloc_targ -= 10
         );
 
-        Gamepads.gamepad1().leftTrigger().inRange(0.1, 1).whenBecomesTrue(Loader.INSTANCE.load_ball);
+        Gamepads.gamepad1().leftTrigger().inRange(0.1, 1)
+                .whenBecomesTrue(Loader.INSTANCE.load_ball);
+
         Gamepads.gamepad1().rightTrigger().inRange(0.1, 1).whenBecomesTrue(Loader.INSTANCE.reset_loader);
     }
 
     @Override
     public void onUpdate() {
-
         camPose = Camera.INSTANCE.getCamPose();
-
+        odo.update();
 
         if (camPose[3] == 1) {
             telemetry.addData("Yaw: ", camPose[2]);
             //odo.setPosition(new Pose2D(DistanceUnit.INCH, camPose[0], camPose[1], AngleUnit.DEGREES,camPose[2]));
-            //angle = AngleOffset;
         }
-//        else {
-//            angle = 0;
-//        }
-
-
-//        pose[0] = odo.getPosition().getX(DistanceUnit.INCH);
-//        pose[1] = odo.getPosition().getY(DistanceUnit.INCH);
-//        pose[2] = odo.getPosition().getHeading(AngleUnit.DEGREES);
-
         //Flywheel.INSTANCE.veloc_targ = interpolate.get(distance) + driverOffset;
 
+        double odoX = odo.getPosition().getX(DistanceUnit.INCH);
+        double odoY = odo.getPosition().getY(DistanceUnit.INCH);
 
+        double goalX = -58.3727;
+        double goalY = -55.6425;
 
-        heading_error = imu.get().inDeg;
+        double deltaX = odoX - goalX;
+        double deltaY = odoY - goalY;
+        double targetAngle = Math.toDegrees(Math.atan2(deltaY, deltaX));
+        double robotAngle = odo.getHeading(AngleUnit.DEGREES);
+        heading_error = AngleUnit.normalizeDegrees(targetAngle - robotAngle);
         controller.updateError(heading_error);
         heading_lock_power = controller.run();
 
-        BindingManager.update();
-        telemetry.addData("imu pos: ", imu.get().inDeg);
-        heading_error = Math.IEEEremainder(heading_error, 360);
+        //telemetry.addData("target angle: ", targetAngle);
         telemetry.addData("heading error: ", heading_error);
+        telemetry.addData("----------------------------", "camera stuff:");
+        telemetry.addData("cam x:", camPose[0]);
+        telemetry.addData("cam y:", camPose[1]);
+        telemetry.addData("----------------------------", "pinpoint stuff:");
+        telemetry.addData("pinpoint x: ", odoX);
+        telemetry.addData("pinpoint y: ", odoY);
+        telemetry.addData("pinpoint heading: ", odo.getHeading(AngleUnit.DEGREES));
         telemetry.update();
+        BindingManager.update();
     }
 
     @Override

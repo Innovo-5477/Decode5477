@@ -55,7 +55,7 @@ public class Camera implements Subsystem {
                 ActiveOpMode.telemetry().addLine(String.format("XYZ %6.1f %6.1f %6.1f  (inch)", detection.ftcPose.x, detection.ftcPose.y, detection.ftcPose.z));
                 pose[0] = detection.robotPose.getPosition().x;
                 pose[1] = detection.robotPose.getPosition().y;
-                pose[2] = detection.robotPose.getOrientation().getYaw(AngleUnit.DEGREES);
+                pose[2] = detection.ftcPose.yaw;
                 pose[3] = 1;
                 //ActiveOpMode.telemetry().addLine(String.format("PRY %6.1f %6.1f %6.1f  (deg)", detection.ftcPose.pitch, detection.ftcPose.roll, detection.ftcPose.yaw));
                 //ActiveOpMode.telemetry().addLine(String.format("RBE %6.1f %6.1f %6.1f  (inch, deg, deg)", detection.ftcPose.range, detection.ftcPose.bearing, detection.ftcPose.elevation));
@@ -69,7 +69,7 @@ public class Camera implements Subsystem {
             }
         }
 
-        ActiveOpMode.telemetry().addLine("\nkey:\nXYZ = X (Right), Y (Forward), Z (Up) dist.");
+        //ActiveOpMode.telemetry().addLine("\nkey:\nXYZ = X (Right), Y (Forward), Z (Up) dist.");
         //ActiveOpMode.telemetry().addLine("PRY = Pitch, Roll & Yaw (XYZ Rotation)");
         //ActiveOpMode.telemetry().addLine("RBE = Range, Bearing & Elevation");
         //ActiveOpMode.telemetry().update();
