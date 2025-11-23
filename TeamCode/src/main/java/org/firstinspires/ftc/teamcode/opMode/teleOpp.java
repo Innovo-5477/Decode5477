@@ -132,7 +132,6 @@ public class teleOpp extends NextFTCOpMode {
         odo.update();
 
         if (camPose[3] == 1) {
-            telemetry.addData("Yaw: ", camPose[2]);
             //odo.setPosition(new Pose2D(DistanceUnit.INCH, camPose[0], camPose[1], AngleUnit.DEGREES,camPose[2]));
         }
         //Flywheel.INSTANCE.veloc_targ = interpolate.get(distance) + driverOffset;
@@ -140,8 +139,8 @@ public class teleOpp extends NextFTCOpMode {
         double odoX = odo.getPosition().getX(DistanceUnit.INCH);
         double odoY = odo.getPosition().getY(DistanceUnit.INCH);
 
-        double goalX = -58.3727;
-        double goalY = -55.6425;
+        double goalX = -60;
+        double goalY = -62.5;
 
         double deltaX = odoX - goalX;
         double deltaY = odoY - goalY;
