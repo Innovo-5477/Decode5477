@@ -1,12 +1,14 @@
 package org.firstinspires.ftc.teamcode.opMode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.retired.Tom;
 import dev.nextftc.core.components.SubsystemComponent;
 import dev.nextftc.ftc.NextFTCOpMode;
 
 @Autonomous(name = "Tomathan Testjamin")
+@Disabled
 public class Tomtest extends NextFTCOpMode {
     public Tomtest() {addComponents(new SubsystemComponent(Tom.INSTANCE));}
     //Limelight3A tom = hardwareMap.get(Limelight3A.class, "tom");

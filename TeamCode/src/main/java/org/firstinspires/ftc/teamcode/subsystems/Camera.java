@@ -51,6 +51,7 @@ public class Camera implements Subsystem {
         ActiveOpMode.telemetry().addData("# AprilTags Detected", currentDetections.size());
         for (AprilTagDetection detection : currentDetections) {
             if (detection.metadata != null) {
+
                 ActiveOpMode.telemetry().addLine(String.format("\n==== (ID %d) %s", detection.id, detection.metadata.name));
                 ActiveOpMode.telemetry().addLine(String.format("XYZ %6.1f %6.1f %6.1f  (inch)", detection.ftcPose.x, detection.ftcPose.y, detection.ftcPose.z));
                 pose[0] = detection.robotPose.getPosition().x;
@@ -60,10 +61,10 @@ public class Camera implements Subsystem {
                 //ActiveOpMode.telemetry().addLine(String.format("PRY %6.1f %6.1f %6.1f  (deg)", detection.ftcPose.pitch, detection.ftcPose.roll, detection.ftcPose.yaw));
                 //ActiveOpMode.telemetry().addLine(String.format("RBE %6.1f %6.1f %6.1f  (inch, deg, deg)", detection.ftcPose.range, detection.ftcPose.bearing, detection.ftcPose.elevation));
                 distance2D = Math.sqrt(Math.pow(detection.ftcPose.x,2) + Math.pow(detection.ftcPose.y,2));
-                ActiveOpMode.telemetry().addData("Distance:", distance2D);
+                ActiveOpMode.telemetry().addData("Cam Distance:", distance2D);
 
             } else {
-                ActiveOpMode.telemetry().addLine(String.format("\n==== (ID %d) Unknown", detection.id));
+                        ActiveOpMode.telemetry().addLine(String.format("\n==== (ID %d) Unknown", detection.id));
                 pose[3] = 0;
                 angleOffset = 0;
             }

@@ -34,7 +34,7 @@ public class Flywheel implements Subsystem {
     public static BasicFeedforwardParameters Rff = new BasicFeedforwardParameters(0, 0, 0);
 
     public static final Flywheel INSTANCE = new Flywheel();
-    public double veloc_targ = 900;
+    public double veloc_targ;
     private Flywheel() { }
 
     public MotorEx l = new MotorEx("leftFlywheel");
@@ -59,9 +59,13 @@ public class Flywheel implements Subsystem {
     }
 
     @Override
+    public void initialize(){
+        veloc_targ = 0;
+    }
+
+    @Override
     public void periodic() {
         if (ActiveOpMode.opModeIsActive()) {
-
             l.setPower(leftController.calculate(new KineticState(
                     l.getCurrentPosition(), l.getVelocity()
             )));

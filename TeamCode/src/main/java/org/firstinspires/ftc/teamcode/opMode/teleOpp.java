@@ -28,6 +28,7 @@ import java.util.function.BooleanSupplier;
 import dev.nextftc.bindings.BindingManager;
 import dev.nextftc.control.feedback.PIDCoefficients;
 import dev.nextftc.core.commands.Command;
+import dev.nextftc.core.commands.groups.SequentialGroup;
 import dev.nextftc.core.commands.utility.InstantCommand;
 import dev.nextftc.core.components.BindingsComponent;
 import dev.nextftc.core.components.SubsystemComponent;
@@ -39,7 +40,7 @@ import dev.nextftc.hardware.impl.Direction;
 import dev.nextftc.hardware.impl.IMUEx;
 import dev.nextftc.hardware.impl.MotorEx;
 
-@TeleOp(name = "field centric teleop")
+@TeleOp(name = "Robot Centric Teleop")
 @Configurable
 public class teleOpp extends NextFTCOpMode {
     public teleOpp() {
@@ -67,22 +68,48 @@ public class teleOpp extends NextFTCOpMode {
     double distance = 0;
     double[] camPose = {0, 0, 0, 0};
     double driverOffset = 0;
-
+    InterpLUT vel = new InterpLUT();
+    public enum alliance {
+        RED,
+        BLUE
+    }
     //private IMUEx imu = new IMUEx("imu", Direction.LEFT, Direction.FORWARD).zeroed();
 
-    GoBildaPinpointDriver odo;
+    static alliance a;
+    static Pose end;
 
+    static boolean auto_happened = false;
+    static boolean tele_happened = false;
+
+    GoBildaPinpointDriver odo;
+    double goalX = -60;
+    double goalY = -62.5;
+    boolean stop_flywheel = false;
     @Override
     public void onInit() {
+        if (!auto_happened) {
+            end = new Pose(0, 0, 0);
+            a = alliance.BLUE;
+        } else if (a.equals(alliance.RED)){
+            goalY = 62.5;
+        }
+        vel.add(40.3, 1050);
+        vel.add(64, 1100);
+        vel.add(84, 1160);
+        vel.add(130, 1380);
+        vel.createLUT();
+
         odo = hardwareMap.get(GoBildaPinpointDriver.class,"pinpoint");
         odo.setOffsets(-4, 4, DistanceUnit.INCH);
         odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_SWINGARM_POD);
         odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED, GoBildaPinpointDriver.EncoderDirection.REVERSED); //x supposed to increase when moving forward, y supposed to increase when moving left
-        odo.resetPosAndIMU();
+        odo.setPosition(new Pose2D(DistanceUnit.INCH, end.getX(), end.getY(),AngleUnit.DEGREES, Math.toDegrees(end.getHeading())));
+        Gamepads.gamepad1().rightStickX();
     }
 
     @Override
     public void onStartButtonPressed() {
+        Flywheel.INSTANCE.veloc_targ = 1000;
         heading_lock = false;
         Command driverControlled = new MecanumDriverControlled(
                 frontLeftMotor,
@@ -105,29 +132,32 @@ public class teleOpp extends NextFTCOpMode {
                 new InstantCommand(() -> odo.resetPosAndIMU())
         ); //Command to reset imu
 
+
+        Gamepads.gamepad1().y().whenBecomesTrue(()->stop_flywheel = !stop_flywheel);
+
+        Gamepads.gamepad1().dpadUp().whenBecomesTrue(
+                () -> driverOffset += 10
+        );
+        Gamepads.gamepad1().dpadDown().whenBecomesTrue(
+                () -> driverOffset -= 10
+        );
+
         Gamepads.gamepad1().leftBumper().whenBecomesTrue(
                 new InstantCommand(() -> driverOffset = 0)
         ); //Resets driver offset
 
-
-        Gamepads.gamepad1().y().whenBecomesTrue(Flywheel.INSTANCE.shootingVelocity(() -> Flywheel.INSTANCE.veloc_targ));
-        Gamepads.gamepad1().x().whenBecomesTrue(Flywheel.INSTANCE.shootingVelocity(() -> 0));
-
-        Gamepads.gamepad1().dpadUp().whenBecomesTrue(
-                () -> Flywheel.INSTANCE.veloc_targ += 10
-        );
-        Gamepads.gamepad1().dpadDown().whenBecomesTrue(
-                () -> Flywheel.INSTANCE.veloc_targ -= 10
-        );
-
         Gamepads.gamepad1().leftTrigger().inRange(0.1, 1)
                 .whenBecomesTrue(Loader.INSTANCE.load_ball);
 
-        Gamepads.gamepad1().rightTrigger().inRange(0.1, 1).whenBecomesTrue(Loader.INSTANCE.reset_loader);
+        Gamepads.gamepad1().rightTrigger().inRange(0.1, 1).whenBecomesTrue(
+                new SequentialGroup(
+                        Loader.INSTANCE.reset_loader
+                ));
     }
 
     @Override
     public void onUpdate() {
+
         camPose = Camera.INSTANCE.getCamPose();
         odo.update();
 
@@ -139,9 +169,6 @@ public class teleOpp extends NextFTCOpMode {
         double odoX = odo.getPosition().getX(DistanceUnit.INCH);
         double odoY = odo.getPosition().getY(DistanceUnit.INCH);
 
-        double goalX = -60;
-        double goalY = -62.5;
-
         double deltaX = odoX - goalX;
         double deltaY = odoY - goalY;
         double targetAngle = Math.toDegrees(Math.atan2(deltaY, deltaX));
@@ -150,7 +177,18 @@ public class teleOpp extends NextFTCOpMode {
         controller.updateError(heading_error);
         heading_lock_power = controller.run();
 
+        double pinpointDistance = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY,2));
+        if (!stop_flywheel){
+            Flywheel.INSTANCE.veloc_targ = vel.get(pinpointDistance) + driverOffset;
+        } else{
+            Flywheel.INSTANCE.veloc_targ = 0;
+        }
+        Flywheel.INSTANCE.shootingVelocity(()->Flywheel.INSTANCE.veloc_targ).schedule();
+
+
         //telemetry.addData("target angle: ", targetAngle);
+        telemetry.addData("ALLIANCE: ", a);
+        telemetry.addData("end theta: ", Math.toDegrees(end.getHeading()));
         telemetry.addData("heading error: ", heading_error);
         telemetry.addData("----------------------------", "camera stuff:");
         telemetry.addData("cam x:", camPose[0]);
@@ -159,13 +197,16 @@ public class teleOpp extends NextFTCOpMode {
         telemetry.addData("pinpoint x: ", odoX);
         telemetry.addData("pinpoint y: ", odoY);
         telemetry.addData("pinpoint heading: ", odo.getHeading(AngleUnit.DEGREES));
+        telemetry.addData("pinpoint distance: ", pinpointDistance);
         telemetry.update();
         BindingManager.update();
     }
 
     @Override
     public void onStop() {
+        Loader.INSTANCE.load_ball.schedule();
         BindingManager.reset();
+
     }
 }
 
