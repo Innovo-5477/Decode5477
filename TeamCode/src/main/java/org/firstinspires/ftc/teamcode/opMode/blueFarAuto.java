@@ -71,7 +71,8 @@ public class blueFarAuto extends NextFTCOpMode {
                 new Delay(1),
                 new FollowPath(Leave),
                 new Delay(1),
-                Loader.INSTANCE.load_ball
+                Loader.INSTANCE.load_ball,
+                Flywheel.INSTANCE.shootingVelocity(()->0)
         );
     }
 

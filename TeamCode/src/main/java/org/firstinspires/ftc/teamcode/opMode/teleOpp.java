@@ -58,9 +58,7 @@ public class teleOpp extends NextFTCOpMode {
     private MotorEx frontRightMotor = new MotorEx("fr").brakeMode();
     private MotorEx backLeftMotor = new MotorEx("bl").brakeMode().reversed();
     private MotorEx backRightMotor = new MotorEx("br").brakeMode();
-
-    InterpLUT interpolate = new InterpLUT(); //am I creating the class the right way even?
-    public static PIDFCoefficients headingPIDcoefficients = new PIDFCoefficients(0.0001, 0, 0, 0);
+    public static PIDFCoefficients headingPIDcoefficients = new PIDFCoefficients(0.0005, 0, 0, 0);
     PIDFController controller = new PIDFController(headingPIDcoefficients);
     double heading_error = 0;
     double heading_lock_power = 0;
@@ -130,7 +128,7 @@ public class teleOpp extends NextFTCOpMode {
         );
         Gamepads.gamepad1().leftStickButton().whenBecomesTrue(
                 new InstantCommand(() -> odo.resetPosAndIMU())
-        ); //Command to reset imu
+        );
 
 
         Gamepads.gamepad1().y().whenBecomesTrue(()->stop_flywheel = !stop_flywheel);
@@ -144,7 +142,11 @@ public class teleOpp extends NextFTCOpMode {
 
         Gamepads.gamepad1().leftBumper().whenBecomesTrue(
                 new InstantCommand(() -> driverOffset = 0)
-        ); //Resets driver offset
+        );
+
+        Gamepads.gamepad1().rightBumper().whenBecomesTrue(
+                new InstantCommand(() -> odo.setPosition(new Pose2D(DistanceUnit.INCH,-57, -57, AngleUnit.DEGREES, odo.getHeading(AngleUnit.DEGREES))))
+        );
 
         Gamepads.gamepad1().leftTrigger().inRange(0.1, 1)
                 .whenBecomesTrue(Loader.INSTANCE.load_ball);
@@ -168,16 +170,20 @@ public class teleOpp extends NextFTCOpMode {
 
         double odoX = odo.getPosition().getX(DistanceUnit.INCH);
         double odoY = odo.getPosition().getY(DistanceUnit.INCH);
-
         double deltaX = odoX - goalX;
         double deltaY = odoY - goalY;
+        double pinpointDistance = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY,2));
+        if (pinpointDistance > 100){
+            goalY = -67;
+        } else{
+            goalY = -62.5;
+        }
         double targetAngle = Math.toDegrees(Math.atan2(deltaY, deltaX));
         double robotAngle = odo.getHeading(AngleUnit.DEGREES);
         heading_error = AngleUnit.normalizeDegrees(targetAngle - robotAngle);
         controller.updateError(heading_error);
         heading_lock_power = controller.run();
 
-        double pinpointDistance = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY,2));
         if (!stop_flywheel){
             Flywheel.INSTANCE.veloc_targ = vel.get(pinpointDistance) + driverOffset;
         } else{
@@ -206,7 +212,8 @@ public class teleOpp extends NextFTCOpMode {
     public void onStop() {
         Loader.INSTANCE.load_ball.schedule();
         BindingManager.reset();
-
+        end = new Pose(odo.getPosition().getX(DistanceUnit.INCH), odo.getPosition().getY(DistanceUnit.INCH), odo.getHeading(AngleUnit.DEGREES));
+        auto_happened = true;
     }
 }
 
