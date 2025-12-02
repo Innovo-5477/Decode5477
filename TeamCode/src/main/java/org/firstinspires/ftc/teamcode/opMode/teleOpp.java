@@ -34,6 +34,7 @@ import dev.nextftc.core.components.BindingsComponent;
 import dev.nextftc.core.components.SubsystemComponent;
 import dev.nextftc.ftc.Gamepads;
 import dev.nextftc.ftc.NextFTCOpMode;
+import dev.nextftc.ftc.components.LoopTimeComponent;
 import dev.nextftc.hardware.driving.MecanumDriverControlled;
 
 import dev.nextftc.hardware.impl.Direction;
@@ -50,7 +51,8 @@ public class teleOpp extends NextFTCOpMode {
                         Loader.INSTANCE,
                         Camera.INSTANCE
                 ),
-                BindingsComponent.INSTANCE
+                BindingsComponent.INSTANCE,
+                new LoopTimeComponent()
         );
     }
 
@@ -140,21 +142,21 @@ public class teleOpp extends NextFTCOpMode {
                 () -> driverOffset -= 10
         );
 
-        Gamepads.gamepad1().leftBumper().whenBecomesTrue(
+        Gamepads.gamepad1().start().whenBecomesTrue(
                 new InstantCommand(() -> driverOffset = 0)
         );
 
-        Gamepads.gamepad1().rightBumper().whenBecomesTrue(
-                new InstantCommand(() -> odo.setPosition(new Pose2D(DistanceUnit.INCH,-57, -57, AngleUnit.DEGREES, odo.getHeading(AngleUnit.DEGREES))))
+        Gamepads.gamepad1().back().whenBecomesTrue(
+                new InstantCommand(() -> odo.setPosition(new Pose2D(DistanceUnit.INCH,-57, -57, AngleUnit.DEGREES, 135)))
         );
 
-        Gamepads.gamepad1().leftTrigger().inRange(0.1, 1)
-                .whenBecomesTrue(Loader.INSTANCE.load_ball);
+        Gamepads.gamepad1().leftBumper().whenBecomesTrue(
+                Loader.INSTANCE.load_ball
+        );
 
-        Gamepads.gamepad1().rightTrigger().inRange(0.1, 1).whenBecomesTrue(
-                new SequentialGroup(
-                        Loader.INSTANCE.reset_loader
-                ));
+        Gamepads.gamepad1().rightBumper().whenBecomesTrue(
+                Loader.INSTANCE.reset_loader
+        );
     }
 
     @Override
@@ -190,7 +192,6 @@ public class teleOpp extends NextFTCOpMode {
             Flywheel.INSTANCE.veloc_targ = 0;
         }
         Flywheel.INSTANCE.shootingVelocity(()->Flywheel.INSTANCE.veloc_targ).schedule();
-
 
         //telemetry.addData("target angle: ", targetAngle);
         telemetry.addData("ALLIANCE: ", a);

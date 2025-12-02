@@ -27,8 +27,8 @@ import dev.nextftc.hardware.impl.MotorEx;
 
 @Configurable
 public class Flywheel implements Subsystem {
-    public static PIDCoefficients Lcoefficients = new PIDCoefficients(0.006, 0, 0);
-    public static PIDCoefficients Rcoefficients = new PIDCoefficients(0.006, 0, 0);
+    public static PIDCoefficients Lcoefficients = new PIDCoefficients(0.009, 0, 0);
+    public static PIDCoefficients Rcoefficients = new PIDCoefficients(0.009, 0, 0);
 
     public static BasicFeedforwardParameters Lff = new BasicFeedforwardParameters(0, 0, 0);
     public static BasicFeedforwardParameters Rff = new BasicFeedforwardParameters(0, 0, 0);
