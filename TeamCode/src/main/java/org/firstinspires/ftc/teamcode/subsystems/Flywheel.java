@@ -24,14 +24,15 @@ import dev.nextftc.ftc.ActiveOpMode;
 import dev.nextftc.hardware.controllable.MotorGroup;
 import dev.nextftc.hardware.controllable.RunToVelocity;
 import dev.nextftc.hardware.impl.MotorEx;
+import dev.nextftc.hardware.impl.VoltageCompensatingMotor;
 
 @Configurable
 public class Flywheel implements Subsystem {
-    public static PIDCoefficients Lcoefficients = new PIDCoefficients(0.009, 0, 0);
-    public static PIDCoefficients Rcoefficients = new PIDCoefficients(0.009, 0, 0);
+    public static PIDCoefficients Lcoefficients = new PIDCoefficients(0.005, 0, 0);
+    public static PIDCoefficients Rcoefficients = new PIDCoefficients(0.005, 0, 0);
 
-    public static BasicFeedforwardParameters Lff = new BasicFeedforwardParameters(0, 0, 0);
-    public static BasicFeedforwardParameters Rff = new BasicFeedforwardParameters(0, 0, 0);
+    public static BasicFeedforwardParameters Lff = new BasicFeedforwardParameters(0.0001, 0, 0.3);
+    public static BasicFeedforwardParameters Rff = new BasicFeedforwardParameters(0.0001, 0, 0.3);
 
     public static final Flywheel INSTANCE = new Flywheel();
     public double veloc_targ;

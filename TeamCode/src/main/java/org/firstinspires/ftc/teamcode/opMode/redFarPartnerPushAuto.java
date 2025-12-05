@@ -24,10 +24,9 @@ import dev.nextftc.extensions.pedro.PedroComponent;
 import dev.nextftc.ftc.NextFTCOpMode;
 import dev.nextftc.ftc.components.BulkReadComponent;
 
-@Autonomous(name = "Blue Far Partner Push Auto")
-public class blueFarPartnerPushAuto extends NextFTCOpMode {
-
-    public blueFarPartnerPushAuto() {
+@Autonomous(name = "Red Far Partner Push Auto")
+public class redFarPartnerPushAuto extends NextFTCOpMode {
+    public redFarPartnerPushAuto() {
         addComponents(
                 new PedroComponent(Constants::createFollower),
                 new SubsystemComponent(
@@ -37,10 +36,10 @@ public class blueFarPartnerPushAuto extends NextFTCOpMode {
                 BulkReadComponent.INSTANCE
         );
     }
-    Pose startPose =  new Pose(64.67605633802816, 8.563380281690137, Math.toRadians(0));
-    Pose pushPose = new Pose(38.30985915492958, 11, Math.toRadians(0));
-    Pose shootPose = new Pose(50, 107, Math.toRadians(135));
-    Pose endPose = new Pose(23.2112676056338, 95.77464788732395, Math.toRadians(135));
+    Pose startPose =  new Pose(79, 8.563380281690137, Math.toRadians(180));
+    Pose pushPose = new Pose(106, 11, Math.toRadians(180));
+    Pose shootPose = new Pose(94, 107, Math.toRadians(45));
+    Pose endPose = new Pose(121, 95.77464788732395, Math.toRadians(45));
     PathChain ScorePreload;
     PathChain Leave;
     public void buildPaths(){

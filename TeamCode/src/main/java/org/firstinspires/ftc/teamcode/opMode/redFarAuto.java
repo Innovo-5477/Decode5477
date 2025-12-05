@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.opMode;
 import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.follower;
 
 import com.pedropathing.ftc.FTCCoordinates;
-import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
@@ -24,10 +23,10 @@ import dev.nextftc.extensions.pedro.PedroComponent;
 import dev.nextftc.ftc.NextFTCOpMode;
 import dev.nextftc.ftc.components.BulkReadComponent;
 
-@Autonomous(name = "Blue Far Partner Push Auto")
-public class blueFarPartnerPushAuto extends NextFTCOpMode {
+@Autonomous(name = "Red Far Auto")
+public class redFarAuto extends NextFTCOpMode {
 
-    public blueFarPartnerPushAuto() {
+    public redFarAuto() {
         addComponents(
                 new PedroComponent(Constants::createFollower),
                 new SubsystemComponent(
@@ -37,19 +36,15 @@ public class blueFarPartnerPushAuto extends NextFTCOpMode {
                 BulkReadComponent.INSTANCE
         );
     }
-    Pose startPose =  new Pose(64.67605633802816, 8.563380281690137, Math.toRadians(0));
-    Pose pushPose = new Pose(38.30985915492958, 11, Math.toRadians(0));
-    Pose shootPose = new Pose(50, 107, Math.toRadians(135));
-    Pose endPose = new Pose(23.2112676056338, 95.77464788732395, Math.toRadians(135));
+    Pose startPose =  new Pose(88, 7.887323943661974, Math.toRadians(90));
+    Pose shootPose = new Pose(85, 20.732394366197177, Math.toRadians(65));
+    Pose endPose = new Pose(85, 34.92957746478872, Math.toRadians(90));
     PathChain ScorePreload;
     PathChain Leave;
     public void buildPaths(){
         ScorePreload = PedroComponent.follower().pathBuilder()
-                .addPath(new BezierLine(startPose, pushPose))
-                .setConstantHeadingInterpolation(startPose.getHeading())
-                .setTimeoutConstraint(500)
-                .addPath(new BezierCurve(pushPose, new Pose(66.70422535211267, 62.64788732394366), shootPose))
-                .setLinearHeadingInterpolation(pushPose.getHeading(), shootPose.getHeading())
+                .addPath(new BezierLine(startPose, shootPose))
+                .setLinearHeadingInterpolation(startPose.getHeading(), shootPose.getHeading())
                 .build();
         Leave = PedroComponent.follower().pathBuilder()
                 .addPath(new BezierLine(shootPose, endPose))
@@ -58,10 +53,10 @@ public class blueFarPartnerPushAuto extends NextFTCOpMode {
     }
     public Command run() {
         return new SequentialGroup(
+                Flywheel.INSTANCE.shootingVelocity(()->MechanismConstants.FLYWHEEL_CLOSE_VEL),
                 new Delay(0.2),
                 new FollowPath(ScorePreload),
-                Flywheel.INSTANCE.shootingVelocity(()->MechanismConstants.FLYWHEEL_CLOSE_VEL),
-                new Delay(1.5),
+                new Delay(0.5),
                 Loader.INSTANCE.load_ball,
                 new Delay(1),
                 Loader.INSTANCE.reset_loader,
@@ -105,7 +100,7 @@ public class blueFarPartnerPushAuto extends NextFTCOpMode {
         end = end.minus(new Pose(72, 72));
         end = end.rotate(Math.PI / 2, true);
         teleOpp.end = end;
-        teleOpp.a = teleOpp.alliance.BLUE;
+        teleOpp.a = teleOpp.alliance.RED;
         teleOpp.auto_happened = true;
     }
 }

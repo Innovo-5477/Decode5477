@@ -53,7 +53,7 @@ public class blueCloseAuto extends NextFTCOpMode {
     }
     public Command run() {
         return new SequentialGroup(
-                Flywheel.INSTANCE.shootingVelocity(()->1115),
+                Flywheel.INSTANCE.shootingVelocity(()->MechanismConstants.FLYWHEEL_CLOSE_VEL),
                 new Delay(0.2),
                 new FollowPath(ScorePreload),
                 new Delay(0.5),

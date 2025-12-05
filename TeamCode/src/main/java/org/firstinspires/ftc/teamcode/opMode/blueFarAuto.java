@@ -53,7 +53,7 @@ public class blueFarAuto extends NextFTCOpMode {
     }
     public Command run() {
         return new SequentialGroup(
-                Flywheel.INSTANCE.shootingVelocity(()->1330),
+                Flywheel.INSTANCE.shootingVelocity(()->MechanismConstants.FLYWHEEL_FAR_VEL),
                 new Delay(0.2),
                 new FollowPath(ScorePreload),
                 new Delay(1),

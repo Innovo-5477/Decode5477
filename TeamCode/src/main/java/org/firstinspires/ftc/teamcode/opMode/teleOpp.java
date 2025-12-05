@@ -40,6 +40,7 @@ import dev.nextftc.hardware.driving.MecanumDriverControlled;
 import dev.nextftc.hardware.impl.Direction;
 import dev.nextftc.hardware.impl.IMUEx;
 import dev.nextftc.hardware.impl.MotorEx;
+import dev.nextftc.hardware.impl.VoltageCompensatingMotor;
 
 @TeleOp(name = "Robot Centric Teleop")
 @Configurable
@@ -69,6 +70,8 @@ public class teleOpp extends NextFTCOpMode {
     double[] camPose = {0, 0, 0, 0};
     double driverOffset = 0;
     InterpLUT vel = new InterpLUT();
+
+    double currentVoltage;
     public enum alliance {
         RED,
         BLUE
@@ -83,7 +86,10 @@ public class teleOpp extends NextFTCOpMode {
 
     GoBildaPinpointDriver odo;
     double goalX = -60;
-    double goalY = -62.5;
+    double goalY = -61.5;
+    double CLOSE_VEL = MechanismConstants.FLYWHEEL_CLOSE_VEL;
+    double FAR_VEL = MechanismConstants.FLYWHEEL_FAR_VEL;
+    public double mult = 1;
     boolean stop_flywheel = false;
     @Override
     public void onInit() {
@@ -91,7 +97,7 @@ public class teleOpp extends NextFTCOpMode {
             end = new Pose(0, 0, 0);
             a = alliance.BLUE;
         } else if (a.equals(alliance.RED)){
-            goalY = 62.5;
+            mult = -1;
         }
         vel.add(40.3, 1050);
         vel.add(64, 1100);
@@ -109,7 +115,7 @@ public class teleOpp extends NextFTCOpMode {
 
     @Override
     public void onStartButtonPressed() {
-        Flywheel.INSTANCE.veloc_targ = 1000;
+        Flywheel.INSTANCE.veloc_targ = CLOSE_VEL;
         heading_lock = false;
         Command driverControlled = new MecanumDriverControlled(
                 frontLeftMotor,
@@ -128,10 +134,6 @@ public class teleOpp extends NextFTCOpMode {
                 new InstantCommand(() -> heading_lock = !heading_lock)
 
         );
-        Gamepads.gamepad1().leftStickButton().whenBecomesTrue(
-                new InstantCommand(() -> odo.resetPosAndIMU())
-        );
-
 
         Gamepads.gamepad1().y().whenBecomesTrue(()->stop_flywheel = !stop_flywheel);
 
@@ -146,8 +148,8 @@ public class teleOpp extends NextFTCOpMode {
                 new InstantCommand(() -> driverOffset = 0)
         );
 
-        Gamepads.gamepad1().back().whenBecomesTrue(
-                new InstantCommand(() -> odo.setPosition(new Pose2D(DistanceUnit.INCH,-57, -57, AngleUnit.DEGREES, 135)))
+        Gamepads.gamepad1().leftStickButton().whenBecomesTrue(
+                new InstantCommand(() -> odo.setPosition(new Pose2D(DistanceUnit.INCH,-57, -57 * mult, AngleUnit.DEGREES, 135)))
         );
 
         Gamepads.gamepad1().leftBumper().whenBecomesTrue(
@@ -175,10 +177,12 @@ public class teleOpp extends NextFTCOpMode {
         double deltaX = odoX - goalX;
         double deltaY = odoY - goalY;
         double pinpointDistance = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY,2));
-        if (pinpointDistance > 100){
-            goalY = -67;
+        if (pinpointDistance > 90){
+            goalY = -65 * mult;
+            Flywheel.INSTANCE.veloc_targ = FAR_VEL + driverOffset; //add voltage comp
         } else{
-            goalY = -62.5;
+            goalY = -61.5 * mult;
+            Flywheel.INSTANCE.veloc_targ = CLOSE_VEL + driverOffset; //add voltage comp
         }
         double targetAngle = Math.toDegrees(Math.atan2(deltaY, deltaX));
         double robotAngle = odo.getHeading(AngleUnit.DEGREES);
@@ -186,10 +190,8 @@ public class teleOpp extends NextFTCOpMode {
         controller.updateError(heading_error);
         heading_lock_power = controller.run();
 
-        if (!stop_flywheel){
-            Flywheel.INSTANCE.veloc_targ = vel.get(pinpointDistance) + driverOffset;
-        } else{
-            Flywheel.INSTANCE.veloc_targ = 0;
+        if (stop_flywheel){
+          Flywheel.INSTANCE.veloc_targ = 0;
         }
         Flywheel.INSTANCE.shootingVelocity(()->Flywheel.INSTANCE.veloc_targ).schedule();
 
