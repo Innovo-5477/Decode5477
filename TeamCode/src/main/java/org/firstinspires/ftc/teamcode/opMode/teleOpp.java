@@ -209,6 +209,7 @@ public class teleOpp extends NextFTCOpMode {
         telemetry.addData("pinpoint distance: ", pinpointDistance);
         telemetry.update();
         BindingManager.update();
+
     }
 
     @Override
