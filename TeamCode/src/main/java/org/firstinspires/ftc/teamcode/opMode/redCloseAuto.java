@@ -36,9 +36,9 @@ public class redCloseAuto extends NextFTCOpMode {
                 BulkReadComponent.INSTANCE
         );
     }
-    Pose startPose =  new Pose(103.6619718309859, 135.887, Math.toRadians(90));
-    Pose shootPose = new Pose(104, 104, Math.toRadians(45));
-    Pose endPose = new Pose(120.79, 95.77464788732395, Math.toRadians(90));
+    Pose startPose =  new Pose(103, 135.211, Math.toRadians(90));
+    Pose shootPose = new Pose(99, 100, Math.toRadians(45));
+    Pose endPose = new Pose(124, 99, Math.toRadians(90));
     PathChain ScorePreload;
     PathChain Leave;
     public void buildPaths(){

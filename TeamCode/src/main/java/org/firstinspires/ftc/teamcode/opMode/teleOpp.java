@@ -178,7 +178,7 @@ public class teleOpp extends NextFTCOpMode {
         double deltaY = odoY - goalY;
         double pinpointDistance = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY,2));
         if (pinpointDistance > 90){
-            goalY = -65 * mult;
+            goalY = -63 * mult;
             Flywheel.INSTANCE.veloc_targ = FAR_VEL + driverOffset; //add voltage comp
         } else{
             goalY = -61.5 * mult;

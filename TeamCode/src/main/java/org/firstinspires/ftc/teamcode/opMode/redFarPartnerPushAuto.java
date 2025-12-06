@@ -37,9 +37,9 @@ public class redFarPartnerPushAuto extends NextFTCOpMode {
         );
     }
     Pose startPose =  new Pose(79, 8.563380281690137, Math.toRadians(180));
-    Pose pushPose = new Pose(106, 11, Math.toRadians(180));
-    Pose shootPose = new Pose(94, 107, Math.toRadians(45));
-    Pose endPose = new Pose(121, 95.77464788732395, Math.toRadians(45));
+    Pose pushPose = new Pose(99, 11, Math.toRadians(180));
+    Pose shootPose = new Pose(99, 100, Math.toRadians(45));
+    Pose endPose = new Pose(124, 99, Math.toRadians(90));
     PathChain ScorePreload;
     PathChain Leave;
     public void buildPaths(){
