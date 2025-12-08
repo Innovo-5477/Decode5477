@@ -36,8 +36,8 @@ public class redCloseAuto extends NextFTCOpMode {
                 BulkReadComponent.INSTANCE
         );
     }
-    Pose startPose =  new Pose(103, 135.211, Math.toRadians(90));
-    Pose shootPose = new Pose(99, 100, Math.toRadians(45));
+    Pose startPose =  new Pose(123, 124, Math.toRadians(38));
+    Pose shootPose = new Pose(92.63381437778962, 93.62769540746923, Math.toRadians(38));
     Pose endPose = new Pose(124, 99, Math.toRadians(90));
     PathChain ScorePreload;
     PathChain Leave;
@@ -53,7 +53,7 @@ public class redCloseAuto extends NextFTCOpMode {
     }
     public Command run() {
         return new SequentialGroup(
-                Flywheel.INSTANCE.shootingVelocity(()->MechanismConstants.FLYWHEEL_CLOSE_VEL),
+                Flywheel.INSTANCE.shootingVelocity(()->MechanismConstants.FLYWHEEL_CLOSE_VEL-15),
                 new Delay(0.2),
                 new FollowPath(ScorePreload),
                 new Delay(0.5),

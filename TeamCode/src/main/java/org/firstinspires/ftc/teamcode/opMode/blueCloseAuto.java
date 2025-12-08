@@ -36,8 +36,8 @@ public class blueCloseAuto extends NextFTCOpMode {
                 BulkReadComponent.INSTANCE
         );
     }
-    Pose startPose =  new Pose(33.57746478873239, 135.211, Math.toRadians(90));
-    Pose shootPose = new Pose(40, 100, Math.toRadians(135));
+    Pose startPose =  new Pose(24, 127, Math.toRadians(135));
+    Pose shootPose = new Pose(46, 98.5 , Math.toRadians(137));
     Pose endPose = new Pose(23.2112676056338, 95.77464788732395, Math.toRadians(135));
     PathChain ScorePreload;
     PathChain Leave;
@@ -53,7 +53,7 @@ public class blueCloseAuto extends NextFTCOpMode {
     }
     public Command run() {
         return new SequentialGroup(
-                Flywheel.INSTANCE.shootingVelocity(()->MechanismConstants.FLYWHEEL_CLOSE_VEL),
+                Flywheel.INSTANCE.shootingVelocity(()->MechanismConstants.FLYWHEEL_CLOSE_VEL-20),
                 new Delay(0.2),
                 new FollowPath(ScorePreload),
                 new Delay(0.5),

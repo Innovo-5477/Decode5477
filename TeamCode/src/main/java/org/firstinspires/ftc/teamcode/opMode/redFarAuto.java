@@ -36,8 +36,8 @@ public class redFarAuto extends NextFTCOpMode {
                 BulkReadComponent.INSTANCE
         );
     }
-    Pose startPose =  new Pose(88, 7.887323943661974, Math.toRadians(90));
-    Pose shootPose = new Pose(85, 20.732394366197177, Math.toRadians(65));
+    Pose startPose =  new Pose(88, 8.5, Math.toRadians(90));
+    Pose shootPose = new Pose(82, 17, Math.toRadians(65));
     Pose endPose = new Pose(85, 34.92957746478872, Math.toRadians(90));
     PathChain ScorePreload;
     PathChain Leave;
@@ -53,7 +53,7 @@ public class redFarAuto extends NextFTCOpMode {
     }
     public Command run() {
         return new SequentialGroup(
-                Flywheel.INSTANCE.shootingVelocity(()->MechanismConstants.FLYWHEEL_CLOSE_VEL),
+                Flywheel.INSTANCE.shootingVelocity(()->MechanismConstants.FLYWHEEL_FAR_VEL),
                 new Delay(0.2),
                 new FollowPath(ScorePreload),
                 new Delay(0.5),

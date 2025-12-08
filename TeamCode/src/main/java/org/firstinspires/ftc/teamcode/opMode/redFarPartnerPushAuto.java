@@ -38,7 +38,7 @@ public class redFarPartnerPushAuto extends NextFTCOpMode {
     }
     Pose startPose =  new Pose(79, 8.563380281690137, Math.toRadians(180));
     Pose pushPose = new Pose(99, 11, Math.toRadians(180));
-    Pose shootPose = new Pose(99, 100, Math.toRadians(45));
+    Pose shootPose = new Pose(92.63381437778962, 93.62769540746923, Math.toRadians(45));
     Pose endPose = new Pose(124, 99, Math.toRadians(90));
     PathChain ScorePreload;
     PathChain Leave;
@@ -46,7 +46,6 @@ public class redFarPartnerPushAuto extends NextFTCOpMode {
         ScorePreload = PedroComponent.follower().pathBuilder()
                 .addPath(new BezierLine(startPose, pushPose))
                 .setConstantHeadingInterpolation(startPose.getHeading())
-                .setTimeoutConstraint(500)
                 .addPath(new BezierCurve(pushPose, new Pose(66.70422535211267, 62.64788732394366), shootPose))
                 .setLinearHeadingInterpolation(pushPose.getHeading(), shootPose.getHeading())
                 .build();

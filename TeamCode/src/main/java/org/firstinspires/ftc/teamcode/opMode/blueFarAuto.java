@@ -37,7 +37,7 @@ public class blueFarAuto extends NextFTCOpMode {
         );
     }
     Pose startPose =  new Pose(55.88732394366197, 7.887323943661974, Math.toRadians(90));
-    Pose shootPose = new Pose(59.49295774647888, 20.732394366197177, Math.toRadians(115));
+    Pose shootPose = new Pose(59.49295774647888, 20.732394366197177, Math.toRadians(125));
     Pose endPose = new Pose(59.49295774647888, 34.92957746478872, Math.toRadians(90));
     PathChain ScorePreload;
     PathChain Leave;

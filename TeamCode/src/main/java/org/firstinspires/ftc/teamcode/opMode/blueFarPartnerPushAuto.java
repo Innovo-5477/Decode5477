@@ -38,8 +38,8 @@ public class blueFarPartnerPushAuto extends NextFTCOpMode {
         );
     }
     Pose startPose =  new Pose(64.67605633802816, 8.563380281690137, Math.toRadians(0));
-    Pose pushPose = new Pose(38.30985915492958, 11, Math.toRadians(0));
-    Pose shootPose = new Pose(50, 107, Math.toRadians(135));
+    Pose pushPose = new Pose(48.30985915492958, 11, Math.toRadians(0));
+    Pose shootPose = new Pose(40, 100, Math.toRadians(135));
     Pose endPose = new Pose(23.2112676056338, 95.77464788732395, Math.toRadians(135));
     PathChain ScorePreload;
     PathChain Leave;
